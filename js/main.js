@@ -589,12 +589,20 @@
 (function () {
   var sections = document.querySelectorAll('section[id]');
   var navLinks = document.querySelectorAll('.nav__link');
+  var sectionTops = [];
   var ticking = false;
+
+  function cacheTops() {
+    sectionTops = [];
+    for (var i = 0; i < sections.length; i++) {
+      sectionTops[i] = sections[i].offsetTop;
+    }
+  }
 
   function updateNav() {
     var scrollPos = window.scrollY + 100;
     for (var i = sections.length - 1; i >= 0; i--) {
-      if (sections[i].offsetTop <= scrollPos) {
+      if (sectionTops[i] <= scrollPos) {
         for (var j = 0; j < navLinks.length; j++) {
           navLinks[j].classList.remove('nav__link--active');
           if (navLinks[j].getAttribute('href') === '#' + sections[i].id) {
@@ -613,6 +621,9 @@
       ticking = true;
     }
   }, { passive: true });
+
+  window.addEventListener('resize', cacheTops);
+  cacheTops();
   updateNav();
 
   // Smooth scroll for nav links
