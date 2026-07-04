@@ -571,7 +571,7 @@
     checkReveal();
   }
 
-  window.addEventListener('scroll', checkReveal);
+  window.addEventListener('scroll', checkReveal, { passive: true });
   window.addEventListener('resize', checkReveal);
 
   // Observe DOM changes for dynamic content
@@ -589,6 +589,7 @@
 (function () {
   var sections = document.querySelectorAll('section[id]');
   var navLinks = document.querySelectorAll('.nav__link');
+  var ticking = false;
 
   function updateNav() {
     var scrollPos = window.scrollY + 100;
@@ -603,9 +604,15 @@
         break;
       }
     }
+    ticking = false;
   }
 
-  window.addEventListener('scroll', updateNav);
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      window.requestAnimationFrame(updateNav);
+      ticking = true;
+    }
+  }, { passive: true });
   updateNav();
 
   // Smooth scroll for nav links
