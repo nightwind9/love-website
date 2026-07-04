@@ -1,4 +1,14 @@
 /* ========================================
+   Prevent browser auto-scroll on refresh
+   ======================================== */
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.addEventListener('beforeunload', function () {
+  window.scrollTo(0, 0);
+});
+
+/* ========================================
    Petal Particle System (Canvas)
    ======================================== */
 (function () {
