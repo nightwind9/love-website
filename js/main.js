@@ -117,86 +117,35 @@
 (function () {
   var grid = document.getElementById('galleryGrid');
   var photos = [
-    { src: 'assets/images/placeholder-1.jpg', alt: '我们的第一张合照' },
-    { src: 'assets/images/placeholder-2.jpg', alt: '一起看日落' },
-    { src: 'assets/images/placeholder-3.jpg', alt: '你的生日' },
-    { src: 'assets/images/placeholder-4.jpg', alt: '海边旅行' },
-    { src: 'assets/images/placeholder-5.jpg', alt: '一起做饭' },
-    { src: 'assets/images/placeholder-6.jpg', alt: '雨天散步' },
-    { src: 'assets/images/placeholder-7.jpg', alt: '跨年烟火' },
-    { src: 'assets/images/placeholder-8.jpg', alt: '我们的日常' },
+    { src: '', alt: '我们的第一张合照' },
+    { src: '', alt: '一起看日落' },
+    { src: '', alt: '你的生日' },
+    { src: '', alt: '海边旅行' },
+    { src: '', alt: '一起做饭' },
+    { src: '', alt: '雨天散步' },
+    { src: '', alt: '跨年烟火' },
+    { src: '', alt: '我们的日常' },
   ];
 
-  var placeholderCanvas = document.createElement('canvas');
-  placeholderCanvas.width = 400;
-  placeholderCanvas.height = 300;
-  var pctx = placeholderCanvas.getContext('2d');
-  pctx.fillStyle = '#E8DFEB';
-  pctx.fillRect(0, 0, 400, 300);
-
-  pctx.fillStyle = '#D4B8C5';
-  pctx.beginPath();
-  pctx.ellipse(120, 60, 18, 12, 0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(140, 58, 18, 12, -0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(130, 68, 24, 16, 0, 0, Math.PI * 2);
-  pctx.fill();
-
-  pctx.beginPath();
-  pctx.ellipse(200, 100, 18, 12, 0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(220, 98, 18, 12, -0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(210, 108, 24, 16, 0, 0, Math.PI * 2);
-  pctx.fill();
-
-  pctx.beginPath();
-  pctx.ellipse(310, 70, 18, 12, 0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(330, 68, 18, 12, -0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(320, 78, 24, 16, 0, 0, Math.PI * 2);
-  pctx.fill();
-
-  pctx.beginPath();
-  pctx.ellipse(80, 180, 18, 12, 0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(100, 178, 18, 12, -0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(90, 188, 24, 16, 0, 0, Math.PI * 2);
-  pctx.fill();
-
-  pctx.beginPath();
-  pctx.ellipse(270, 180, 18, 12, 0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(290, 178, 18, 12, -0.3, 0, Math.PI * 2);
-  pctx.fill();
-  pctx.beginPath();
-  pctx.ellipse(280, 188, 24, 16, 0, 0, Math.PI * 2);
-  pctx.fill();
-
-  pctx.fillStyle = '#B8A0C8';
-  pctx.font = '14px serif';
-  pctx.textAlign = 'center';
-  pctx.fillText('照片占位', 200, 260);
-
-  var placeholderDataURL = placeholderCanvas.toDataURL();
+  var placeholderColors = [
+    ['#E8DFEB', '#D4C8D8'],
+    ['#EDE4F0', '#D8CCE0'],
+    ['#F0E4ED', '#DCC8D8'],
+    ['#E5DEE8', '#D5C8D5'],
+    ['#EBE0EA', '#D8C8D5'],
+    ['#E8DFEB', '#D4C8D8'],
+    ['#EDE4F0', '#D8CCE0'],
+    ['#F0E4ED', '#DCC8D8'],
+  ];
 
   for (var i = 0; i < photos.length; i++) {
     var item = document.createElement('div');
     item.className = 'gallery__item';
+    var gradient = 'linear-gradient(135deg, ' + placeholderColors[i][0] + ', ' + placeholderColors[i][1] + ')';
     item.innerHTML =
-      '<img class="gallery__item-img" src="' + placeholderDataURL + '" alt="' + photos[i].alt + '">' +
+      '<div class="gallery__item-img gallery__item-img--placeholder" style="background:' + gradient + '">' +
+        '<span class="gallery__item-placeholder-icon">&#10087;</span>' +
+      '</div>' +
       '<div class="gallery__item-overlay">' + photos[i].alt + '</div>';
     item.addEventListener('click', (function (idx) {
       return function () { openLightbox(idx); };
@@ -211,10 +160,22 @@
 
   function openLightbox(index) {
     currentIndex = index;
-    lightboxImg.src = placeholderDataURL;
+    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
+    lightboxImg.style.display = 'none';
+    lightboxImg.style.background = gradient;
+    lightboxImg.style.minWidth = '300px';
+    lightboxImg.style.minHeight = '200px';
     lightboxCaption.textContent = photos[index].alt;
     lightbox.classList.add('lightbox--active');
     document.body.style.overflow = 'hidden';
+  }
+
+  function showPlaceholder(index) {
+    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
+    lightboxImg.style.display = 'none';
+    lightboxImg.style.background = gradient;
+    lightboxImg.style.minWidth = '300px';
+    lightboxImg.style.minHeight = '200px';
   }
 
   function closeLightbox() {
@@ -229,13 +190,13 @@
 
   document.getElementById('lightboxPrev').addEventListener('click', function () {
     currentIndex = (currentIndex - 1 + photos.length) % photos.length;
-    lightboxImg.src = placeholderDataURL;
+    showPlaceholder(currentIndex);
     lightboxCaption.textContent = photos[currentIndex].alt;
   });
 
   document.getElementById('lightboxNext').addEventListener('click', function () {
     currentIndex = (currentIndex + 1) % photos.length;
-    lightboxImg.src = placeholderDataURL;
+    showPlaceholder(currentIndex);
     lightboxCaption.textContent = photos[currentIndex].alt;
   });
 
@@ -243,12 +204,12 @@
     if (!lightbox.classList.contains('lightbox--active')) return;
     if (e.key === 'ArrowLeft') {
       currentIndex = (currentIndex - 1 + photos.length) % photos.length;
-      lightboxImg.src = placeholderDataURL;
+      showPlaceholder(currentIndex);
       lightboxCaption.textContent = photos[currentIndex].alt;
     }
     if (e.key === 'ArrowRight') {
       currentIndex = (currentIndex + 1) % photos.length;
-      lightboxImg.src = placeholderDataURL;
+      showPlaceholder(currentIndex);
       lightboxCaption.textContent = photos[currentIndex].alt;
     }
     if (e.key === 'Escape') closeLightbox();
@@ -264,11 +225,11 @@
   var timelineList = document.getElementById('timelineList');
   var events = [
     { date: '2023年12月15日', title: '第一次相遇', desc: '在朋友聚会上第一次见到你，你的笑容让我再也忘不掉。' },
-    { date: '2024年1月1日', title: '我们在一起了', desc: '元旦的第一天，你答应了我的告白，这成了我人生最幸福的一天。' },
-    { date: '2024年3月14日', title: '第一次旅行', desc: '白色情人节，我们去了海边。海风很大，但牵着你的手就不觉得冷。' },
-    { date: '2024年6月20日', title: '你的生日', desc: '给你准备了惊喜派对，看到你开心的样子，觉得一切都值得。' },
-    { date: '2024年10月1日', title: '一起养了猫', desc: '我们的第一只猫咪——小团子，让我们的家更加完整。' },
-    { date: '2025年1月1日', title: '一周年纪念', desc: '一年了，每一天都很幸福。和你在一起的时光总是过得太快。' },
+    { date: '2024年11月2日', title: '我们在一起了', desc: '和你在一起的每一天，都成了我人生最宝贵的记忆。' },
+    { date: '2025年3月14日', title: '第一次旅行', desc: '白色情人节，我们去了海边。海风很大，但牵着你的手就不觉得冷。' },
+    { date: '2025年6月20日', title: '你的生日', desc: '给你准备了惊喜派对，看到你开心的样子，觉得一切都值得。' },
+    { date: '2025年10月1日', title: '一起养了猫', desc: '我们的第一只猫咪——小团子，让我们的家更加完整。' },
+    { date: '2025年11月2日', title: '一周年纪念', desc: '一年了，每一天都很幸福。和你在一起的时光总是过得太快。' },
   ];
 
   for (var i = 0; i < events.length; i++) {
@@ -319,34 +280,12 @@
   for (var i = 0; i < foods.length; i++) {
     var card = document.createElement('div');
     card.className = 'food__card reveal';
-
-    var canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 180;
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = foods[i].color;
-    ctx.fillRect(0, 0, 400, 180);
-
-    ctx.fillStyle = 'rgba(184, 160, 200, 0.3)';
-    ctx.beginPath();
-    ctx.arc(200, 70, 40, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = 'rgba(212, 184, 197, 0.3)';
-    ctx.beginPath();
-    ctx.arc(260, 110, 30, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = 'rgba(154, 170, 155, 0.3)';
-    ctx.beginPath();
-    ctx.arc(140, 120, 25, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#B8A0C8';
-    ctx.font = '13px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('美⾷图', 200, 90);
+    var gradient = 'linear-gradient(135deg, ' + foods[i].color + ', rgba(184, 160, 200, 0.2))';
 
     card.innerHTML =
-      '<img class="food__card-img" src="' + canvas.toDataURL() + '" alt="' + foods[i].name + '">' +
+      '<div class="food__card-img food__card-img--placeholder" style="background:' + gradient + '">' +
+        '<span class="food__card-placeholder-icon">&#127860;</span>' +
+      '</div>' +
       '<div class="food__card-body">' +
         '<h3 class="food__card-title">' + foods[i].name + '</h3>' +
         '<div class="food__card-meta">' +
@@ -364,7 +303,7 @@
 (function () {
   var container = document.getElementById('letterCards');
   var letters = [
-    { title: '第一封信', emoji: '💌', content: '亲爱的，这是我们在一起的第1个月。这两个月里我每天最开心的事就是看到你。你让我的世界变得不一样了。' },
+    { title: '第一封信', emoji: '💌', content: '亲爱的，这是我们在一起的第1个月。这个月里我每天最开心的事就是看到你。你让我的世界变得不一样了。' },
     { title: '小纸条', emoji: '💝', content: '今天突然想对你说——你是我遇到过最好的人。温柔、善良、偶尔有点小任性，但这就是我爱着的你。' },
     { title: '写在一周年', emoji: '💕', content: '一周年快乐！这一年来，我们一起经历了那么多。有欢笑有泪水，但最重要的是我们一直在一起。我爱你，不止今天。' },
   ];
@@ -684,23 +623,5 @@
 
   btn.addEventListener('click', function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-})();
-
-/* ========================================
-   Mobile Nav Toggle (not used for bottom nav, kept for future)
-   ======================================== */
-(function () {
-  var toggle = document.getElementById('navToggle');
-  if (!toggle) return;
-
-  toggle.addEventListener('click', function () {
-    var nav = document.getElementById('nav');
-    toggle.classList.toggle('nav-toggle--open');
-    if (!nav.classList.contains('nav--open')) {
-      nav.classList.add('nav--open');
-    } else {
-      nav.classList.remove('nav--open');
-    }
   });
 })();
