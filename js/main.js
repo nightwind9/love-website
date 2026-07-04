@@ -522,6 +522,40 @@
     var s = Math.floor(seconds % 60);
     return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
   }
+
+  var autoplayTried = false;
+
+  function tryAutoplay() {
+    if (autoplayTried) return;
+    autoplayTried = true;
+    audio.src = songs[0].file;
+    audio.volume = 0.35;
+    audio.play().then(function () {
+      isPlaying = true;
+      currentTrack = 0;
+      updatePlayBtn();
+      updateDisc();
+      document.getElementById('musicTitle').textContent = songs[0].title;
+      document.getElementById('musicArtist').textContent = songs[0].artist;
+      var tracks = playlist.querySelectorAll('.music__track');
+      for (var ti = 0; ti < tracks.length; ti++) {
+        if (ti === 0) tracks[ti].classList.add('music__track--active');
+        else tracks[ti].classList.remove('music__track--active');
+      }
+    }).catch(function () {
+      autoplayTried = false;
+    });
+  }
+
+  tryAutoplay();
+  setTimeout(function () { tryAutoplay(); }, 3000);
+
+  document.addEventListener('click', function () {
+    if (!isPlaying && !autoplayTried) tryAutoplay();
+  }, { once: true });
+  document.addEventListener('touchstart', function () {
+    if (!isPlaying && !autoplayTried) tryAutoplay();
+  }, { once: true });
 })();
 
 /* ========================================
