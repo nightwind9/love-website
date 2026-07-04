@@ -519,11 +519,17 @@
   document.getElementById('musicPlay').addEventListener('click', function () {
     if (currentTrack < 0) {
       playTrack(0);
+      switchAndPlay(0);
+      return;
     }
     if (isPlaying) {
       audio.pause();
       isPlaying = false;
     } else {
+      if (!audio.src || audio.src === window.location.href) {
+        switchAndPlay(currentTrack);
+        return;
+      }
       audio.play();
       isPlaying = true;
     }
@@ -601,18 +607,6 @@
     var s = Math.floor(seconds % 60);
     return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
   }
-
-  audio.addEventListener('play', function () {
-    setTimeout(function () {
-      if (!audio.paused && window.bgMusicStop) window.bgMusicStop();
-    }, 300);
-  });
-
-  audio.addEventListener('pause', function () {
-    setTimeout(function () {
-      if (audio.paused && window.bgMusicStart) window.bgMusicStart();
-    }, 500);
-  });
 
   audio.addEventListener('ended', function () {
     var next = (currentTrack + 1) % songs.length;
