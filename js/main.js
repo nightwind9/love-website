@@ -81,12 +81,12 @@
    Days Timer
    ======================================== */
 (function () {
-  var anniversaryDate = localStorage.getItem('anniversaryDate') || '2024-01-01';
-  var input = document.getElementById('anniversaryInput');
-  input.value = anniversaryDate;
+  var anniversaryDate = localStorage.getItem('anniversaryDate') || '2024-11-02';
+  if (!localStorage.getItem('anniversaryDate')) {
+    localStorage.setItem('anniversaryDate', '2024-11-02');
+  }
 
   updateTimer();
-
   setInterval(updateTimer, 1000);
 
   function updateTimer() {
@@ -112,14 +112,6 @@
     since.textContent = '从 ' + y + '年' + m + '月' + d + '日 开始';
   }
 
-  document.getElementById('setAnniversaryBtn').addEventListener('click', function () {
-    var val = input.value;
-    if (val) {
-      anniversaryDate = val;
-      localStorage.setItem('anniversaryDate', val);
-      updateTimer();
-    }
-  });
 })();
 
 /* ========================================
