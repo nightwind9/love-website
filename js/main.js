@@ -333,6 +333,86 @@
 })();
 
 /* ========================================
+   Background Music Generator
+   ======================================== */
+(function () {
+  var ctx = null;
+  var gainNode = null;
+  var isPlaying = false;
+  var noteIndex = 0;
+  var timer = null;
+
+  // C major pentatonic scale - gentle and pleasant
+  var notes = [
+    523.25, 587.33, 659.25, 783.99, 880.00, // C5 D5 E5 G5 A5
+    783.99, 659.25, 587.33, 523.25, 440.00, // G5 E5 D5 C5 A4
+    523.25, 659.25, 783.99, 659.25, 587.33, // C5 E5 G5 E5 D5
+    440.00, 523.25, 587.33, 523.25, 440.00, // A4 C5 D5 C5 A4
+    392.00, 440.00, 523.25, 440.00, 392.00, // G4 A4 C5 A4 G4
+  ];
+
+  function initCtx() {
+    if (ctx) return;
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = ctx.createGain();
+    gainNode.gain.value = 0.06;
+    gainNode.connect(ctx.destination);
+  }
+
+  function playNote(freq) {
+    if (!ctx) return;
+    var now = ctx.currentTime;
+    var osc = ctx.createOscillator();
+    var env = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    env.gain.setValueAtTime(0, now);
+    env.gain.linearRampToValueAtTime(0.5, now + 0.08);
+    env.gain.linearRampToValueAtTime(0.3, now + 1.2);
+    env.gain.linearRampToValueAtTime(0, now + 1.6);
+    osc.connect(env);
+    env.connect(gainNode);
+    osc.start(now);
+    osc.stop(now + 1.7);
+  }
+
+  function playSequence() {
+    if (!isPlaying) return;
+    playNote(notes[noteIndex]);
+    noteIndex = (noteIndex + 1) % notes.length;
+    timer = setTimeout(playSequence, 1200);
+  }
+
+  function start() {
+    initCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    if (isPlaying) return;
+    isPlaying = true;
+    noteIndex = 0;
+    playSequence();
+  }
+
+  function stop() {
+    isPlaying = false;
+    if (timer) { clearTimeout(timer); timer = null; }
+  }
+
+  // Try autoplay (most browsers allow AudioContext after first gesture)
+  try { initCtx(); ctx.resume().then(function () { start(); }).catch(function () {}); } catch (e) {}
+
+  // Fallback: start on first user interaction
+  document.addEventListener('click', function () {
+    if (!isPlaying) { try { start(); } catch (e) {} }
+  }, { once: true });
+  document.addEventListener('touchstart', function () {
+    if (!isPlaying) { try { start(); } catch (e) {} }
+  }, { once: true });
+
+  window.bgMusicStart = start;
+  window.bgMusicStop = stop;
+})();
+
+/* ========================================
    Music Player
    ======================================== */
 (function () {
@@ -497,12 +577,6 @@
     document.getElementById('musicDuration').textContent = formatTime(audio.duration);
   });
 
-  audio.addEventListener('ended', function () {
-    var next = (currentTrack + 1) % songs.length;
-    playTrack(next);
-    switchAndPlay(next);
-  });
-
   function updatePlayBtn() {
     document.getElementById('musicPlay').innerHTML = isPlaying ? '⏸' : '▶';
   }
@@ -523,39 +597,21 @@
     return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
   }
 
-  var autoplayTried = false;
+  audio.addEventListener('play', function () {
+    if (window.bgMusicStop) window.bgMusicStop();
+  });
 
-  function tryAutoplay() {
-    if (autoplayTried) return;
-    autoplayTried = true;
-    audio.src = songs[0].file;
-    audio.volume = 0.35;
-    audio.play().then(function () {
-      isPlaying = true;
-      currentTrack = 0;
-      updatePlayBtn();
-      updateDisc();
-      document.getElementById('musicTitle').textContent = songs[0].title;
-      document.getElementById('musicArtist').textContent = songs[0].artist;
-      var tracks = playlist.querySelectorAll('.music__track');
-      for (var ti = 0; ti < tracks.length; ti++) {
-        if (ti === 0) tracks[ti].classList.add('music__track--active');
-        else tracks[ti].classList.remove('music__track--active');
-      }
-    }).catch(function () {
-      autoplayTried = false;
-    });
-  }
+  audio.addEventListener('pause', function () {
+    setTimeout(function () {
+      if (audio.paused && window.bgMusicStart) window.bgMusicStart();
+    }, 500);
+  });
 
-  tryAutoplay();
-  setTimeout(function () { tryAutoplay(); }, 3000);
-
-  document.addEventListener('click', function () {
-    if (!isPlaying && !autoplayTried) tryAutoplay();
-  }, { once: true });
-  document.addEventListener('touchstart', function () {
-    if (!isPlaying && !autoplayTried) tryAutoplay();
-  }, { once: true });
+  audio.addEventListener('ended', function () {
+    var next = (currentTrack + 1) % songs.length;
+    playTrack(next);
+    switchAndPlay(next);
+  });
 })();
 
 /* ========================================
