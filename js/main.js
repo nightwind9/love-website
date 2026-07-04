@@ -342,17 +342,17 @@
 
   // Song playlist (replace with your own audio files)
   var songs = [
-    { title: '慢慢喜欢你', artist: '莫文蔚', file: '' },
-    { title: '想你的风吹到了我这里', artist: '张碧晨', file: '' },
-    { title: '月亮代表我的心', artist: '邓丽君', file: '' },
-    { title: '往后余生', artist: '马良', file: '' },
+    { title: '星晴', artist: '周杰伦', file: 'assets/audio/星晴.mp3' },
+    { title: '明天过后', artist: '', file: 'assets/audio/明天过后.m4a' },
+    { title: '蝴蝶 love u~', artist: '', file: 'assets/audio/蝴蝶_love u~.m4a' },
+    { title: '梦祺起床啦', artist: '', file: 'assets/audio/梦祺起床啦.mp3' },
   ];
 
   // Voice recordings
   var recordings = [
-    { name: '给你唱的第一首歌.mp3', date: '2024年3月', file: '' },
-    { name: '午夜悄悄话.mp3', date: '2024年8月', file: '' },
-    { name: '生日祝福.mp3', date: '2025年6月', file: '' },
+    { name: '梦祺起床啦.mp3', date: '录制时间', file: 'assets/audio/梦祺起床啦.mp3' },
+    { name: '明天过后.m4a', date: '录制时间', file: 'assets/audio/明天过后.m4a' },
+    { name: '蝴蝶 love u~.m4a', date: '录制时间', file: 'assets/audio/蝴蝶_love u~.m4a' },
   ];
 
   var currentTrack = -1;
@@ -451,6 +451,7 @@
     if (songs.length === 0) return;
     var prev = (currentTrack - 1 + songs.length) % songs.length;
     playTrack(prev);
+    switchAndPlay(prev);
   });
 
   // Next
@@ -458,7 +459,18 @@
     if (songs.length === 0) return;
     var next = (currentTrack + 1) % songs.length;
     playTrack(next);
+    switchAndPlay(next);
   });
+
+  function switchAndPlay(idx) {
+    if (songs[idx].file) {
+      audio.src = songs[idx].file;
+      audio.play();
+      isPlaying = true;
+      updatePlayBtn();
+      updateDisc();
+    }
+  }
 
   // Volume
   document.getElementById('musicVolume').addEventListener('input', function () {
@@ -488,6 +500,7 @@
   audio.addEventListener('ended', function () {
     var next = (currentTrack + 1) % songs.length;
     playTrack(next);
+    switchAndPlay(next);
   });
 
   function updatePlayBtn() {
