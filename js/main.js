@@ -488,8 +488,8 @@
   });
 
   audio.addEventListener('timeupdate', function () {
-    var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-    document.getElementById('musicProgressFill').style.width = pct + '%';
+    var pct = audio.duration ? audio.currentTime / audio.duration : 0;
+    document.getElementById('musicProgressFill').style.transform = 'scaleX(' + pct + ')';
     document.getElementById('musicCurrentTime').textContent = formatTime(audio.currentTime);
   });
 
