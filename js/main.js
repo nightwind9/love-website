@@ -81,10 +81,7 @@
    Days Timer
    ======================================== */
 (function () {
-  var anniversaryDate = localStorage.getItem('anniversaryDate') || '2024-11-02';
-  if (!localStorage.getItem('anniversaryDate')) {
-    localStorage.setItem('anniversaryDate', '2024-11-02');
-  }
+  var anniversaryDate = '2024-11-02';
 
   updateTimer();
   setInterval(updateTimer, 1000);
