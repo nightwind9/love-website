@@ -342,46 +342,57 @@
   var noteIndex = 0;
   var timer = null;
 
-  // C major pentatonic - gentle piano-like melody
-  var notes = [
-    523.25, 587.33, 659.25, 783.99, 880.00,
-    783.99, 659.25, 587.33, 523.25, 440.00,
-    523.25, 659.25, 783.99, 659.25, 587.33,
-    440.00, 523.25, 587.33, 523.25, 440.00,
-    392.00, 440.00, 523.25, 440.00, 392.00,
+  // Happy melody in C major - bouncy and joyful
+  var melodyNotes = [
+    523.25, 587.33, 659.25, 523.25, 659.25, 783.99, 880.00, 783.99,
+    659.25, 783.99, 880.00, 1046.5, 880.00, 783.99, 659.25, 587.33,
+    523.25, 659.25, 783.99, 659.25, 587.33, 523.25, 440.00, 523.25,
+    659.25, 587.33, 523.25, 440.00, 392.00, 440.00, 523.25, 659.25,
+  ];
+  var melodyDurations = [
+    500, 300, 500, 300, 400, 600, 700, 400,
+    400, 300, 500, 800, 400, 300, 400, 300,
+    500, 300, 500, 300, 400, 600, 700, 400,
+    400, 300, 400, 300, 500, 300, 400, 600,
   ];
 
   function initCtx() {
     if (!ctx) {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
       gainNode = ctx.createGain();
-      gainNode.gain.value = 0.06;
+      gainNode.gain.value = 0.05;
       gainNode.connect(ctx.destination);
     }
   }
 
-  function playNote(freq) {
+  function playNote(freq, dur) {
     if (!ctx || !isPlaying) return;
     var now = ctx.currentTime;
+    var sec = dur / 1000;
     var osc = ctx.createOscillator();
     var env = ctx.createGain();
-    osc.type = 'triangle';
+    osc.type = 'sine';
     osc.frequency.value = freq;
+
+    // Soft attack, quick sustain, gentle release
     env.gain.setValueAtTime(0, now);
-    env.gain.linearRampToValueAtTime(0.5, now + 0.1);
-    env.gain.linearRampToValueAtTime(0.25, now + 1.3);
-    env.gain.linearRampToValueAtTime(0, now + 1.8);
+    env.gain.linearRampToValueAtTime(0.5, now + 0.04);
+    env.gain.setValueAtTime(0.4, now + sec * 0.6);
+    env.gain.linearRampToValueAtTime(0, now + sec);
+
     osc.connect(env);
     env.connect(gainNode);
     osc.start(now);
-    osc.stop(now + 1.9);
+    osc.stop(now + sec + 0.1);
   }
 
   function playSequence() {
     if (!isPlaying) return;
-    playNote(notes[noteIndex]);
-    noteIndex = (noteIndex + 1) % notes.length;
-    timer = setTimeout(playSequence, 1100);
+    var note = melodyNotes[noteIndex];
+    var dur = melodyDurations[noteIndex];
+    playNote(note, dur);
+    noteIndex = (noteIndex + 1) % melodyNotes.length;
+    timer = setTimeout(playSequence, dur);
   }
 
   function start() {
