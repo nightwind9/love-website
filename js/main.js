@@ -342,53 +342,54 @@
   var noteIndex = 0;
   var timer = null;
 
-  // C major pentatonic scale - gentle and pleasant
+  // C major pentatonic - gentle piano-like melody
   var notes = [
-    523.25, 587.33, 659.25, 783.99, 880.00, // C5 D5 E5 G5 A5
-    783.99, 659.25, 587.33, 523.25, 440.00, // G5 E5 D5 C5 A4
-    523.25, 659.25, 783.99, 659.25, 587.33, // C5 E5 G5 E5 D5
-    440.00, 523.25, 587.33, 523.25, 440.00, // A4 C5 D5 C5 A4
-    392.00, 440.00, 523.25, 440.00, 392.00, // G4 A4 C5 A4 G4
+    523.25, 587.33, 659.25, 783.99, 880.00,
+    783.99, 659.25, 587.33, 523.25, 440.00,
+    523.25, 659.25, 783.99, 659.25, 587.33,
+    440.00, 523.25, 587.33, 523.25, 440.00,
+    392.00, 440.00, 523.25, 440.00, 392.00,
   ];
 
   function initCtx() {
-    if (ctx) return;
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = ctx.createGain();
-    gainNode.gain.value = 0.06;
-    gainNode.connect(ctx.destination);
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      gainNode = ctx.createGain();
+      gainNode.gain.value = 0.06;
+      gainNode.connect(ctx.destination);
+    }
   }
 
   function playNote(freq) {
-    if (!ctx) return;
+    if (!ctx || !isPlaying) return;
     var now = ctx.currentTime;
     var osc = ctx.createOscillator();
     var env = ctx.createGain();
     osc.type = 'triangle';
     osc.frequency.value = freq;
     env.gain.setValueAtTime(0, now);
-    env.gain.linearRampToValueAtTime(0.5, now + 0.08);
-    env.gain.linearRampToValueAtTime(0.3, now + 1.2);
-    env.gain.linearRampToValueAtTime(0, now + 1.6);
+    env.gain.linearRampToValueAtTime(0.5, now + 0.1);
+    env.gain.linearRampToValueAtTime(0.25, now + 1.3);
+    env.gain.linearRampToValueAtTime(0, now + 1.8);
     osc.connect(env);
     env.connect(gainNode);
     osc.start(now);
-    osc.stop(now + 1.7);
+    osc.stop(now + 1.9);
   }
 
   function playSequence() {
     if (!isPlaying) return;
     playNote(notes[noteIndex]);
     noteIndex = (noteIndex + 1) % notes.length;
-    timer = setTimeout(playSequence, 1200);
+    timer = setTimeout(playSequence, 1100);
   }
 
   function start() {
-    initCtx();
-    if (ctx.state === 'suspended') ctx.resume();
     if (isPlaying) return;
+    initCtx();
     isPlaying = true;
     noteIndex = 0;
+    if (timer) clearTimeout(timer);
     playSequence();
   }
 
@@ -397,16 +398,20 @@
     if (timer) { clearTimeout(timer); timer = null; }
   }
 
-  // Try autoplay (most browsers allow AudioContext after first gesture)
-  try { initCtx(); ctx.resume().then(function () { start(); }).catch(function () {}); } catch (e) {}
+  function tryResumeAndStart() {
+    initCtx();
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(function () { start(); }).catch(function () {});
+    } else {
+      start();
+    }
+  }
 
-  // Fallback: start on first user interaction
-  document.addEventListener('click', function () {
-    if (!isPlaying) { try { start(); } catch (e) {} }
-  }, { once: true });
-  document.addEventListener('touchstart', function () {
-    if (!isPlaying) { try { start(); } catch (e) {} }
-  }, { once: true });
+  tryResumeAndStart();
+
+  document.addEventListener('click', tryResumeAndStart, { once: true });
+  document.addEventListener('touchstart', tryResumeAndStart, { once: true });
+  document.addEventListener('scroll', tryResumeAndStart, { once: true });
 
   window.bgMusicStart = start;
   window.bgMusicStop = stop;
@@ -598,7 +603,9 @@
   }
 
   audio.addEventListener('play', function () {
-    if (window.bgMusicStop) window.bgMusicStop();
+    setTimeout(function () {
+      if (!audio.paused && window.bgMusicStop) window.bgMusicStop();
+    }, 300);
   });
 
   audio.addEventListener('pause', function () {
