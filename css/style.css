@@ -157,17 +157,12 @@ button {
 .nav__link:hover::after,
 .nav__link--active::after {
   background: var(--color-primary);
-  box-shadow: 0 0 12px rgba(184, 160, 200, 0.6);
-  transform: scale(1.2);
+  transform: scale(1.3);
 }
 
 .nav__link--active::after {
-  animation: navPulse 2s ease-in-out infinite;
-}
-
-@keyframes navPulse {
-  0%, 100% { box-shadow: 0 0 6px rgba(184, 160, 200, 0.4); }
-  50% { box-shadow: 0 0 18px rgba(184, 160, 200, 0.8); }
+  background: var(--color-primary);
+  box-shadow: 0 0 8px rgba(184, 160, 200, 0.4);
 }
 
 /* ========================================
