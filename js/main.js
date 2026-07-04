@@ -1,3 +1,4 @@
+/* love-website v20260705 - no background music */
 /* ========================================
    Prevent browser auto-scroll on refresh
    ======================================== */
