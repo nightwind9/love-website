@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我们的回忆录</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 全局导航 -->
+  <nav class="nav" id="nav">
+    <ul class="nav__list">
+      <li><a href="#hero" class="nav__link nav__link--active">开始</a></li>
+      <li><a href="#timer" class="nav__link">时光</a></li>
+      <li><a href="#gallery" class="nav__link">相册</a></li>
+      <li><a href="#timeline" class="nav__link">点滴</a></li>
+      <li><a href="#food" class="nav__link">食谱</a></li>
+      <li><a href="#letter" class="nav__link">情书</a></li>
+      <li><a href="#music" class="nav__link">音乐</a></li>
+    </ul>
+  </nav>
+
+  <!-- 导航汉堡按钮(移动端) -->
+  <button class="nav-toggle" id="navToggle" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- ====== 1. Hero 首屏 ====== -->
+  <section class="hero" id="hero">
+    <canvas id="petalCanvas" class="hero__canvas"></canvas>
+    <div class="hero__content">
+      <p class="hero__subtitle">To My Dearest</p>
+      <h1 class="hero__title">
+        <span class="hero__title-line">我们的</span>
+        <span class="hero__title-line hero__title-line--large">回忆录</span>
+      </h1>
+      <p class="hero__desc">每一个瞬间都值得被珍藏</p>
+      <div class="hero__scroll">
+        <span>向下滚动</span>
+        <div class="hero__scroll-arrow"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 2. 天数计时器 ====== -->
+  <section class="timer" id="timer">
+    <div class="container">
+      <h2 class="section-title">我们在一起</h2>
+      <div class="timer__display">
+        <div class="timer__unit">
+          <div class="timer__flip">
+            <span class="timer__number" id="daysThousands">0</span>
+          </div>
+          <div class="timer__flip">
+            <span class="timer__number" id="daysHundreds">0</span>
+          </div>
+          <div class="timer__flip">
+            <span class="timer__number" id="daysTens">0</span>
+          </div>
+          <div class="timer__flip">
+            <span class="timer__number" id="daysOnes">0</span>
+          </div>
+        </div>
+        <p class="timer__label">天</p>
+      </div>
+      <p class="timer__since" id="sinceDate">从 2024年1月1日 开始</p>
+      <div class="timer__settings">
+        <label class="timer__settings-label">设置纪念日：</label>
+        <input type="date" id="anniversaryInput" class="timer__settings-input">
+        <button id="setAnniversaryBtn" class="btn btn--small">确认</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 3. 照片回忆墙 ====== -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <h2 class="section-title">照片回忆墙</h2>
+      <p class="section-desc">每一张照片，都是我们相爱的证据</p>
+      <div class="gallery__grid" id="galleryGrid">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 照片灯箱 -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lightboxClose">&times;</button>
+    <button class="lightbox__prev" id="lightboxPrev">&#10094;</button>
+    <button class="lightbox__next" id="lightboxNext">&#10095;</button>
+    <img src="" alt="" class="lightbox__img" id="lightboxImg">
+    <p class="lightbox__caption" id="lightboxCaption"></p>
+  </div>
+
+  <!-- ====== 4. 重要时刻时间线 ====== -->
+  <section class="timeline-section" id="timeline">
+    <div class="container">
+      <h2 class="section-title">重要时刻</h2>
+      <p class="section-desc">沿着时间的轨迹，重温我们的故事</p>
+      <div class="timeline" id="timelineList">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 5. 食谱地图 ====== -->
+  <section class="food" id="food">
+    <div class="container">
+      <h2 class="section-title">我们的美食地图</h2>
+      <p class="section-desc">和你一起尝遍世界的美味</p>
+      <div class="food__grid" id="foodGrid">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 6. 情书留言板 ====== -->
+  <section class="letter" id="letter">
+    <div class="container">
+      <h2 class="section-title">写给你的话</h2>
+      <p class="section-desc">纸短情长，说不完对你的喜欢</p>
+      <div class="letter__cards" id="letterCards">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 7. 音乐角落 ====== -->
+  <section class="music" id="music">
+    <div class="container">
+      <h2 class="section-title">音乐角落</h2>
+      <p class="section-desc">那些属于我们的旋律</p>
+      <div class="music__player">
+        <div class="music__player-inner">
+          <div class="music__disc" id="musicDisc">
+            <div class="music__disc-cover"></div>
+          </div>
+          <div class="music__info">
+            <h3 class="music__title" id="musicTitle">选择一首歌</h3>
+            <p class="music__artist" id="musicArtist">—</p>
+          </div>
+          <div class="music__controls">
+            <button class="music__btn" id="musicPrev" title="上一首">&#9198;</button>
+            <button class="music__btn music__btn--play" id="musicPlay" title="播放">&#9654;</button>
+            <button class="music__btn" id="musicNext" title="下一首">&#9197;</button>
+          </div>
+          <div class="music__progress">
+            <span class="music__time" id="musicCurrentTime">00:00</span>
+            <div class="music__progress-bar" id="musicProgressBar">
+              <div class="music__progress-fill" id="musicProgressFill"></div>
+            </div>
+            <span class="music__time" id="musicDuration">00:00</span>
+          </div>
+          <div class="music__volume">
+            <span class="music__volume-icon">&#128266;</span>
+            <input type="range" class="music__volume-slider" id="musicVolume" min="0" max="100" value="70">
+          </div>
+        </div>
+      </div>
+
+      <div class="music__section-title">播放列表</div>
+      <div class="music__playlist" id="musicPlaylist">
+        <!-- JS 动态生成 -->
+      </div>
+
+      <div class="music__section-title">专属录音</div>
+      <div class="music__recordings" id="musicRecordings">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 8. 页脚 ====== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <p class="footer__text">谢谢你出现在我的生命里</p>
+      <p class="footer__subtext">永远爱你</p>
+      <div class="footer__heart">&#10084;</div>
+    </div>
+  </footer>
+
+  <!-- 回到顶部 -->
+  <button class="back-to-top" id="backToTop" title="回到顶部">&#8593;</button>
+
+  <!-- 隐藏的音频播放器 -->
+  <audio id="bgAudio" preload="auto"></audio>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
