@@ -352,11 +352,8 @@ button {
 }
 
 .gallery__grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 240px;
-  gap: 16px;
-  grid-auto-flow: dense;
+  column-count: 4;
+  column-gap: 16px;
 }
 
 .gallery__item {
@@ -366,38 +363,26 @@ button {
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
-}
-
-.gallery__item:nth-child(3n+1) {
-  grid-row: span 2;
-}
-
-.gallery__item:nth-child(5n+3) {
-  grid-column: span 2;
-  grid-row: span 1;
+  break-inside: avoid;
+  margin-bottom: 16px;
 }
 
 .gallery__item:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
 
 .gallery__item-img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.gallery__item:hover .gallery__item-img {
-  transform: scale(1.08);
+  display: block;
+  line-height: 0;
 }
 
 .gallery__item-img--placeholder {
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-size: cover;
 }
 
 .gallery__item-placeholder-icon {
@@ -412,19 +397,12 @@ button {
 }
 
 .gallery__item-real {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 30%;
+  height: auto;
+  display: block;
+  line-height: 0;
   opacity: 0;
   transition: opacity 0.4s ease;
-}
-
-.gallery__item:hover .gallery__item-real {
-  object-position: 50% 30%;
 }
 
 .gallery__item-overlay {
@@ -843,10 +821,14 @@ button {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  aspect-ratio: 3 / 4;
+  width: 100%;
+  padding-bottom: 133%;
 }
 
 .flowers__card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1343,16 +1325,7 @@ button {
    ======================================== */
 @media (max-width: 1024px) {
   .gallery__grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 200px;
-  }
-
-  .gallery__item:nth-child(3n+1) {
-    grid-row: span 1;
-  }
-
-  .gallery__item:nth-child(5n+3) {
-    grid-column: span 1;
+    column-count: 3;
   }
 
   .timeline::before {
@@ -1425,9 +1398,12 @@ button {
   }
 
   .gallery__grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 180px;
-    gap: 10px;
+    column-count: 2;
+    column-gap: 10px;
+  }
+
+  .gallery__item {
+    margin-bottom: 10px;
   }
 
   .gallery__item:nth-child(3n+1),
