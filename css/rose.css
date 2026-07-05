@@ -2,25 +2,22 @@
    CSS Variables & Reset
    ======================================== */
 :root {
-  --color-primary: #C892A8;
-  --color-primary-light: #EAC4D0;
-  --color-primary-dark: #9E6B7E;
-  --color-primary-deep: #6B4256;
-  --color-accent: #B0BEA8;
-  --color-bg: #FCF6F8;
-  --color-bg-light: #FFF9FA;
+  --color-primary: #E89AAA;
+  --color-primary-light: #F5C6D0;
+  --color-primary-dark: #C47A88;
+  --color-primary-deep: #8B4B56;
+  --color-accent: #B5C8B0;
+  --color-bg: #FEF5F7;
+  --color-bg-light: #FFFAFB;
   --color-white: #ffffff;
-  --color-text: #4A3640;
-  --color-text-light: #8B7480;
-  --color-text-lighter: #C4B0B8;
+  --color-text: #4A3238;
+  --color-text-light: #8B6A74;
+  --color-text-lighter: #C4A0A8;
 
-  --font-serif: 'Noto Serif SC', 'ZCOOL XiaoWei', serif;
-  --font-default: 'Noto Serif SC', serif;
-
-  --shadow-sm: 0 2px 8px rgba(107, 66, 86, 0.08);
-  --shadow-md: 0 4px 20px rgba(107, 66, 86, 0.12);
-  --shadow-lg: 0 8px 40px rgba(107, 66, 86, 0.16);
-  --shadow-glow: 0 0 30px rgba(200, 146, 168, 0.3);
+  --shadow-sm: 0 2px 8px rgba(107, 58, 68, 0.08);
+  --shadow-md: 0 4px 20px rgba(107, 58, 68, 0.12);
+  --shadow-lg: 0 8px 40px rgba(107, 58, 68, 0.16);
+  --shadow-glow: 0 0 30px rgba(232, 154, 170, 0.3);
 
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -132,7 +129,7 @@ button {
   background: var(--color-primary-light);
   transition: var(--transition);
   flex-shrink: 0;
-  box-shadow: 0 0 0 0 rgba(200, 146, 168, 0);
+  box-shadow: 0 0 0 0 rgba(232, 154, 170, 0);
 }
 
 .nav__link-name {
@@ -162,7 +159,7 @@ button {
 
 .nav__link--active::after {
   background: var(--color-primary);
-  box-shadow: 0 0 8px rgba(200, 146, 168, 0.4);
+  box-shadow: 0 0 8px rgba(232, 154, 170, 0.4);
 }
 
 /* ========================================
@@ -270,7 +267,7 @@ button {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(200, 146, 168, 0.15), transparent);
+  background: radial-gradient(circle, rgba(232, 154, 170, 0.15), transparent);
 }
 
 .timer::after {
@@ -281,7 +278,7 @@ button {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(234, 196, 208, 0.15), transparent);
+  background: radial-gradient(circle, rgba(245, 198, 208, 0.15), transparent);
 }
 
 .timer__display {
@@ -319,7 +316,7 @@ button {
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(74, 54, 64, 0.1);
+  background: rgba(74, 50, 56, 0.1);
 }
 
 .timer__number {
@@ -420,7 +417,7 @@ button {
   left: 0;
   right: 0;
   padding: 20px;
-  background: linear-gradient(transparent, rgba(107, 66, 86, 0.7));
+  background: linear-gradient(transparent, rgba(107, 58, 68, 0.7));
   color: var(--color-white);
   font-size: 0.9rem;
   opacity: 0;
@@ -441,7 +438,7 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(40, 24, 32, 0.95);
+  background: rgba(40, 20, 28, 0.95);
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -559,7 +556,7 @@ button {
   background: var(--color-white);
   border: 3px solid var(--color-primary);
   z-index: 1;
-  box-shadow: 0 0 12px rgba(200, 146, 168, 0.4);
+  box-shadow: 0 0 12px rgba(232, 154, 170, 0.4);
 }
 
 .timeline__item:nth-child(odd)::before {
@@ -584,7 +581,7 @@ button {
   padding: 20px 24px;
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
-  border: 1px solid rgba(200, 146, 168, 0.15);
+  border: 1px solid rgba(232, 154, 170, 0.15);
 }
 
 .timeline__card:hover {
@@ -704,8 +701,8 @@ button {
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(circle at 10% 20%, rgba(200, 146, 168, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 90% 80%, rgba(234, 196, 208, 0.06) 0%, transparent 50%);
+    radial-gradient(circle at 10% 20%, rgba(232, 154, 170, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(245, 198, 208, 0.06) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -780,7 +777,7 @@ button {
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-md);
-  border: 1px solid rgba(200, 146, 168, 0.2);
+  border: 1px solid rgba(232, 154, 170, 0.2);
   overflow-y: auto;
 }
 
@@ -817,7 +814,7 @@ button {
   padding: 40px 36px;
   box-shadow: var(--shadow-md);
   text-align: center;
-  border: 1px solid rgba(200, 146, 168, 0.15);
+  border: 1px solid rgba(232, 154, 170, 0.15);
 }
 
 .music__disc {
@@ -927,7 +924,7 @@ button {
 .music__progress-bar {
   flex: 1;
   height: 6px;
-  background: rgba(200, 146, 168, 0.2);
+  background: rgba(232, 154, 170, 0.2);
   border-radius: 3px;
   cursor: pointer;
   position: relative;
@@ -978,7 +975,7 @@ button {
   height: 4px;
   -webkit-appearance: none;
   appearance: none;
-  background: rgba(200, 146, 168, 0.25);
+  background: rgba(232, 154, 170, 0.25);
   border-radius: 2px;
   outline: none;
 }
@@ -1320,7 +1317,7 @@ button {
     right: 0;
     transform: translateZ(0);
     background: rgba(255, 255, 255, 0.97);
-    border-top: 1px solid rgba(200, 146, 168, 0.2);
+    border-top: 1px solid rgba(232, 154, 170, 0.2);
     padding: 6px 0;
     will-change: transform;
     -webkit-backdrop-filter: none;
@@ -1347,7 +1344,7 @@ button {
 
   .nav__link--active::after {
     animation: none;
-    box-shadow: 0 0 8px rgba(200, 146, 168, 0.5);
+    box-shadow: 0 0 8px rgba(232, 154, 170, 0.5);
   }
 
   .nav__link-name {
