@@ -143,11 +143,10 @@ window.addEventListener('beforeunload', function () {
     { src: 'assets/images/gallery/IMG_20260208_120436.jpg', alt: '我们的合照 13' },
     { src: 'assets/images/gallery/MTXX_IMG_20260621_19131028.jpg', alt: '我们的合照 14' },
     { src: 'assets/images/gallery/IMG_20260624_082440.jpg', alt: '我们的合照 15' },
-    { src: 'assets/images/gallery/IMG_7014.jpg', alt: '我们的合照 16' },
-    { src: 'assets/images/gallery/HCH00408(1).jpg', alt: '我们的合照 17' },
-    { src: 'assets/images/gallery/HCH00456(1).jpg', alt: '我们的合照 18' },
-    { src: 'assets/images/gallery/微信图片_20260705113500_3673_1.jpg', alt: '我们的合照 19' },
-    { src: 'assets/images/gallery/微信图片_20260705113500_3674_1.jpg', alt: '我们的合照 20' },
+    { src: 'assets/images/gallery/HCH00408(1).jpg', alt: '我们的合照 16' },
+    { src: 'assets/images/gallery/HCH00456(1).jpg', alt: '我们的合照 17' },
+    { src: 'assets/images/gallery/微信图片_20260705113500_3673_1.jpg', alt: '我们的合照 18' },
+    { src: 'assets/images/gallery/微信图片_20260705113500_3674_1.jpg', alt: '我们的合照 19' },
   ];
 
   var placeholderColors = [
