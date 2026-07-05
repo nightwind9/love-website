@@ -352,16 +352,19 @@ button {
 }
 
 .gallery__grid {
-  position: relative;
+  column-count: 4;
+  column-gap: 16px;
 }
 
 .gallery__item {
-  position: absolute;
+  position: relative;
   border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: transform var(--transition), box-shadow var(--transition);
+  break-inside: avoid;
+  margin-bottom: 16px;
 }
 
 .gallery__item:hover {
@@ -1314,6 +1317,10 @@ button {
    Responsive - Tablet
    ======================================== */
 @media (max-width: 1024px) {
+  .gallery__grid {
+    column-count: 3;
+  }
+
   .timeline::before {
     left: 20px;
   }
@@ -1383,8 +1390,13 @@ button {
     transform: none;
   }
 
+  .gallery__grid {
+    column-count: 2;
+    column-gap: 10px;
+  }
+
   .gallery__item {
-    margin-bottom: 0;
+    margin-bottom: 10px;
   }
 
   .food__grid {
