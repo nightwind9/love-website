@@ -19,11 +19,11 @@ window.addEventListener('beforeunload', function () {
 
   var petals = [];
   var petalColors = [
-    'rgba(184, 160, 200, 0.7)',
-    'rgba(212, 184, 197, 0.6)',
-    'rgba(184, 160, 200, 0.4)',
-    'rgba(200, 175, 195, 0.5)',
-    'rgba(154, 170, 155, 0.3)'
+    'rgba(200, 146, 168, 0.7)',
+    'rgba(234, 196, 208, 0.6)',
+    'rgba(200, 146, 168, 0.4)',
+    'rgba(220, 170, 190, 0.5)',
+    'rgba(176, 190, 168, 0.3)'
   ];
 
   function resize() {
@@ -139,14 +139,14 @@ window.addEventListener('beforeunload', function () {
   ];
 
   var placeholderColors = [
-    ['#E8DFEB', '#D4C8D8'],
-    ['#EDE4F0', '#D8CCE0'],
-    ['#F0E4ED', '#DCC8D8'],
-    ['#E5DEE8', '#D5C8D5'],
-    ['#EBE0EA', '#D8C8D5'],
-    ['#E8DFEB', '#D4C8D8'],
-    ['#EDE4F0', '#D8CCE0'],
-    ['#F0E4ED', '#DCC8D8'],
+    ['#F2E0E8', '#D8B8C4'],
+    ['#F5E5EC', '#DEC0CA'],
+    ['#F8E8F0', '#E0C0D0'],
+    ['#F0DCE4', '#DAC0CA'],
+    ['#F2E0EC', '#DABCC8'],
+    ['#F2E0E8', '#D8B8C4'],
+    ['#F5E5EC', '#DEC0CA'],
+    ['#F8E8F0', '#E0C0D0'],
   ];
 
   for (var i = 0; i < photos.length; i++) {
@@ -266,32 +266,32 @@ window.addEventListener('beforeunload', function () {
       name: '街头小笼包',
       place: '上海 · 老弄堂',
       desc: '你第一次带我去吃的小笼包，汤汁很烫但好吃到停不下来。',
-      color: '#E8DFEB'
+      color: '#F2E0E8'
     },
     {
       name: '深夜烧烤摊',
       place: '家门口 · 路边摊',
       desc: '每次加班晚了你都会等我一起吃夜宵，烤鸡翅永远是必点。',
-      color: '#F0E4ED'
+      color: '#F5E5EC'
     },
     {
       name: '日料定食',
       place: '人均300+ · 纪念日餐厅',
       desc: '一周年纪念那天去的，你说三文鱼刺身好吃到眯眼睛的样子太可爱了。',
-      color: '#E5DEE8'
+      color: '#F0DCE4'
     },
     {
       name: '手作甜点',
       place: '家里 · 你的厨房',
       desc: '你第一次给我做蛋糕，虽然形状不太完美，但我觉得比任何蛋糕店都好吃。',
-      color: '#EDE4F0'
+      color: '#F2E0EC'
     },
   ];
 
   for (var i = 0; i < foods.length; i++) {
     var card = document.createElement('div');
     card.className = 'food__card reveal';
-    var gradient = 'linear-gradient(135deg, ' + foods[i].color + ', rgba(184, 160, 200, 0.2))';
+    var gradient = 'linear-gradient(135deg, ' + foods[i].color + ', rgba(200, 146, 168, 0.2))';
 
     card.innerHTML =
       '<div class="food__card-img food__card-img--placeholder" style="background:' + gradient + '">' +
@@ -556,7 +556,7 @@ window.addEventListener('beforeunload', function () {
     heart.textContent = '❤';
     heart.style.left = e.clientX - 10 + 'px';
     heart.style.top = e.clientY - 10 + 'px';
-    heart.style.color = ['#B8A0C8', '#D4B8C5', '#E8C4D0', '#C8A8D8'][Math.floor(Math.random() * 4)];
+    heart.style.color = ['#C892A8', '#EAC4D0', '#F0A8B8', '#D498B0'][Math.floor(Math.random() * 4)];
     heart.style.fontSize = (Math.random() * 16 + 14) + 'px';
     document.body.appendChild(heart);
 
