@@ -153,14 +153,17 @@ window.addEventListener('beforeunload', function () {
     { src: 'assets/images/gallery/微信图片_20260705215926_3707_1.jpg', alt: '我们的合照 23' },
   ];
 
+  var loadedCount = 0;
+
   for (var i = 0; i < photos.length; i++) {
     var item = document.createElement('div');
     item.className = 'gallery__item';
+    item.setAttribute('data-index', i);
 
     var img = document.createElement('img');
     img.className = 'gallery__item-real';
-    img.src = photos[i].src;
     img.alt = photos[i].alt;
+    img.decoding = 'async';
 
     var overlay = document.createElement('div');
     overlay.className = 'gallery__item-overlay';
@@ -172,6 +175,63 @@ window.addEventListener('beforeunload', function () {
       return function () { openLightbox(idx); };
     })(i));
     grid.appendChild(item);
+  }
+
+  // Lazy load with Intersection Observer
+  var observer = new IntersectionObserver(function (entries) {
+    for (var ei = 0; ei < entries.length; ei++) {
+      if (entries[ei].isIntersecting) {
+        var target = entries[ei].target;
+        var img = target.querySelector('.gallery__item-real');
+        var idx = parseInt(target.getAttribute('data-index'));
+        if (img && !img.src && idx >= 0 && idx < photos.length) {
+          img.src = photos[idx].src;
+          img.onload = (function (item, image) {
+            return function () {
+              var rowHeight = parseInt(window.getComputedStyle(grid).gridAutoRows) || 16;
+              var colWidth = item.offsetWidth;
+              var naturalH = image.naturalHeight;
+              var naturalW = image.naturalWidth;
+              var displayH = colWidth * (naturalH / naturalW);
+              var span = Math.max(Math.ceil(displayH / rowHeight), 10);
+              item.style.gridRowEnd = 'span ' + span;
+              item.classList.add('gallery__item-loaded');
+              loadedCount++;
+            };
+          })(target, img);
+          img.onerror = function () { target.style.display = 'none'; };
+        }
+        observer.unobserve(target);
+      }
+    }
+  }, { rootMargin: '200px' });
+
+  var items = grid.querySelectorAll('.gallery__item');
+  for (var ii = 0; ii < items.length; ii++) {
+    observer.observe(items[ii]);
+  }
+
+  // Load first 4 visible items immediately
+  for (var j = 0; j < Math.min(4, photos.length); j++) {
+    var firstItem = items[j];
+    var firstImg = firstItem.querySelector('.gallery__item-real');
+    if (firstImg && !firstImg.src) {
+      firstImg.src = photos[j].src;
+      firstImg.onload = (function (item, image) {
+        return function () {
+          var rowHeight = parseInt(window.getComputedStyle(grid).gridAutoRows) || 16;
+          var colWidth = item.offsetWidth;
+          var naturalH = image.naturalHeight;
+          var naturalW = image.naturalWidth;
+          var displayH = colWidth * (naturalH / naturalW);
+          var span = Math.max(Math.ceil(displayH / rowHeight), 10);
+          item.style.gridRowEnd = 'span ' + span;
+          item.classList.add('gallery__item-loaded');
+          loadedCount++;
+        };
+      })(firstItem, firstImg);
+      firstImg.onerror = function () { firstItem.style.display = 'none'; };
+    }
   }
 
   var lightbox = document.getElementById('lightbox');
