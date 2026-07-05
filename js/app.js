@@ -322,52 +322,51 @@ window.addEventListener('beforeunload', function () {
 (function () {
   var foodGrid = document.getElementById('foodGrid');
   var foods = [
-    {
-      name: '街头小笼包',
-      place: '上海 · 老弄堂',
-      desc: '你第一次带我去吃的小笼包，汤汁很烫但好吃到停不下来。',
-      photo: 'assets/images/food/food-1.jpg',
-      color: '#FCE4EC'
-    },
-    {
-      name: '深夜烧烤摊',
-      place: '家门口 · 路边摊',
-      desc: '每次加班晚了你都会等我一起吃夜宵，烤鸡翅永远是必点。',
-      photo: 'assets/images/food/food-2.jpg',
-      color: '#FDE8EE'
-    },
-    {
-      name: '日料定食',
-      place: '人均300+ · 纪念日餐厅',
-      desc: '一周年纪念那天去的，你说三文鱼刺身好吃到眯眼睛的样子太可爱了。',
-      photo: 'assets/images/food/food-3.jpg',
-      color: '#FBE0E8'
-    },
-    {
-      name: '手作甜点',
-      place: '家里 · 你的厨房',
-      desc: '你第一次给我做蛋糕，虽然形状不太完美，但我觉得比任何蛋糕店都好吃。',
-      photo: 'assets/images/food/food-4.jpg',
-      color: '#FEEBF0'
-    },
+    { name: '街头小笼包', place: '上海 · 老弄堂', desc: '你第一次带我去吃的小笼包，汤汁很烫但好吃到停不下来。', photo: 'assets/images/food/img-17318372933971731837122934_by_crop.jpg' },
+    { name: '深夜烧烤摊', place: '家门口 · 路边摊', desc: '每次加班晚了你都会等我一起吃夜宵，烤鸡翅永远是必点。', photo: 'assets/images/food/IMG_20250607_135722.jpg' },
+    { name: '日料定食', place: '纪念日餐厅', desc: '一周年纪念那天去的，三文鱼刺身好吃到眯眼睛。', photo: 'assets/images/food/IMG_20250608_112540.jpg' },
+    { name: '手作甜点', place: '家里 · 你的小厨房', desc: '你给我做的蛋糕，形状不太完美但比蛋糕店好吃一百倍。', photo: 'assets/images/food/IMG_20260102_211433.jpg' },
+    { name: '一起撸串', place: '街角夜宵摊', desc: '夏天的夜晚总是要去撸串的，配一瓶冰可乐刚刚好。', photo: 'assets/images/food/微信图片_20260705115234_3676_1.jpg' },
+    { name: '火锅之夜', place: '海底捞 · 我们的老地方', desc: '冬天最幸福的事就是和你一起吃火锅，涮到最后还要喝汤。', photo: 'assets/images/food/微信图片_20260705115235_3677_1.jpg' },
+    { name: '下午茶时光', place: '咖啡厅 · 窗边的位置', desc: '周末的下午，一起窝在咖啡厅，你喝拿铁我喝美式。', photo: 'assets/images/food/微信图片_20260705115537_3678_1.jpg' },
+  ];
+
+  var foodPlaceholderColors = [
+    '#FCE4EC', '#FDE8EE', '#FEEBF0', '#FBE0E8', '#FDE8EE', '#FCE4EC', '#FEEBF0'
   ];
 
   for (var i = 0; i < foods.length; i++) {
     var card = document.createElement('div');
     card.className = 'food__card reveal';
-    var gradient = 'linear-gradient(135deg, ' + foods[i].color + ', rgba(232, 154, 170, 0.2))';
+    var gradient = 'linear-gradient(135deg, ' + foodPlaceholderColors[i % foodPlaceholderColors.length] + ', rgba(232, 154, 170, 0.2))';
 
-    card.innerHTML =
-      '<div class="food__card-img food__card-img--placeholder" style="background:' + gradient + '">' +
-        '<span class="food__card-placeholder-icon">&#127860;</span>' +
-        (foods[i].photo ? '<img class="food__card-real" src="' + foods[i].photo + '" alt="' + foods[i].name + '" loading="lazy" ' +
-        'onerror="this.style.display=\'none\'" onload="this.style.display=\'block\'; this.previousElementSibling.style.display=\'none\'">' : '') +
-      '</div>' +
-      '<div class="food__card-body">' +
-        '<h3 class="food__card-title">' + foods[i].name + '</h3>' +
-        '<div class="food__card-meta">' +
-          '<span>' + foods[i].place + '</span>' +
-        '</div>' +
+    var imgWrapper = document.createElement('div');
+    imgWrapper.className = 'food__card-img food__card-img--placeholder';
+    imgWrapper.style.background = gradient;
+
+    var icon = document.createElement('span');
+    icon.className = 'food__card-placeholder-icon';
+    icon.innerHTML = '&#127860;';
+
+    var img = document.createElement('img');
+    img.className = 'food__card-real';
+    img.src = foods[i].photo;
+    img.alt = foods[i].name;
+    img.onload = function () { this.style.opacity = '1'; };
+    img.onerror = function () { this.style.opacity = '0'; };
+
+    imgWrapper.appendChild(icon);
+    imgWrapper.appendChild(img);
+
+    var body = document.createElement('div');
+    body.className = 'food__card-body';
+    body.innerHTML =
+      '<h3 class="food__card-title">' + foods[i].name + '</h3>' +
+      '<div class="food__card-meta"><span>' + foods[i].place + '</span></div>' +
+      '<p class="food__card-desc">' + foods[i].desc + '</p>';
+
+    card.appendChild(imgWrapper);
+    card.appendChild(body);
         '<p class="food__card-desc">' + foods[i].desc + '</p>' +
       '</div>';
     foodGrid.appendChild(card);
@@ -406,6 +405,38 @@ window.addEventListener('beforeunload', function () {
       });
       container.appendChild(envelope);
     })(letters[i]);
+  }
+})();
+
+/* ========================================
+   Flowers Section
+   ======================================== */
+(function () {
+  var grid = document.getElementById('flowersGrid');
+  if (!grid) return;
+
+  var flowers = [
+    { src: 'assets/images/flowers/IMG_20241117_180432.jpg', alt: '玫瑰', desc: '你说这是你最爱的花，从此我也爱上了' },
+    { src: 'assets/images/flowers/IMG_20250316_155818.jpg', alt: '花束', desc: '那天你捧着一束花朝我走来，世界都亮了' },
+    { src: 'assets/images/flowers/IMG_20260116_234843.jpg', alt: '鲜花', desc: '花会凋谢，但我们的爱不会' },
+  ];
+
+  for (var i = 0; i < flowers.length; i++) {
+    var card = document.createElement('div');
+    card.className = 'flowers__card reveal';
+
+    var img = document.createElement('img');
+    img.className = 'flowers__card-img';
+    img.src = flowers[i].src;
+    img.alt = flowers[i].alt;
+
+    var overlay = document.createElement('div');
+    overlay.className = 'flowers__card-caption';
+    overlay.textContent = flowers[i].desc;
+
+    card.appendChild(img);
+    card.appendChild(overlay);
+    grid.appendChild(card);
   }
 })();
 
