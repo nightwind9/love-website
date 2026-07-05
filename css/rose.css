@@ -636,8 +636,7 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: 50% 35%;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+}
 }
 
 .food__card-body {
