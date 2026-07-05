@@ -355,15 +355,13 @@ button {
 }
 
 .gallery__grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: auto;
-  align-items: start;
-  gap: 16px;
+  column-count: 4;
+  column-gap: 16px;
 }
 
 .gallery__item {
-  position: relative;
+  break-inside: avoid;
+  margin-bottom: 16px;
   border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
@@ -1302,7 +1300,7 @@ button {
    ======================================== */
 @media (max-width: 1024px) {
   .gallery__grid {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 3;
   }
 
   .timeline::before {
@@ -1375,8 +1373,12 @@ button {
   }
 
   .gallery__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    column-count: 2;
+    column-gap: 10px;
+  }
+
+  .gallery__item {
+    margin-bottom: 10px;
   }
 
   .food__grid {
