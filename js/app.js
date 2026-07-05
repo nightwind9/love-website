@@ -176,7 +176,13 @@ window.addEventListener('beforeunload', function () {
     img.className = 'gallery__item-real';
     img.src = photos[i].src;
     img.alt = photos[i].alt;
-    img.onload = function () { this.style.opacity = '1'; };
+    img.onload = function () {
+      this.style.opacity = '1';
+      this.parentNode.style.background = 'none';
+      this.parentNode.style.minHeight = '0';
+      var icon = this.previousElementSibling;
+      if (icon) icon.style.display = 'none';
+    };
     img.onerror = function () { this.style.opacity = '0'; };
 
     imgWrapper.appendChild(icon);
