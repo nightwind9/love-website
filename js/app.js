@@ -161,6 +161,7 @@ window.addEventListener('beforeunload', function () {
     img.className = 'gallery__item-real';
     img.src = photos[i].src;
     img.alt = photos[i].alt;
+    img.loading = 'lazy';
 
     var overlay = document.createElement('div');
     overlay.className = 'gallery__item-overlay';
