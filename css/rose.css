@@ -356,12 +356,12 @@ button {
 
 .gallery__grid {
   column-count: 4;
-  column-gap: 16px;
+  column-gap: 8px;
 }
 
 .gallery__item {
   break-inside: avoid;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
@@ -1374,11 +1374,11 @@ button {
 
   .gallery__grid {
     column-count: 2;
-    column-gap: 10px;
+    column-gap: 6px;
   }
 
   .gallery__item {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
 
   .food__grid {
