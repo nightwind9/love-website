@@ -161,17 +161,6 @@ window.addEventListener('beforeunload', function () {
     img.className = 'gallery__item-real';
     img.src = photos[i].src;
     img.alt = photos[i].alt;
-    img.onload = (function (item) {
-      return function () {
-        var rowH = 5;
-        var w = item.offsetWidth;
-        if (w > 0) {
-          var h = w * (this.naturalHeight / this.naturalWidth);
-          item.style.gridRowEnd = 'span ' + Math.max(Math.ceil(h / rowH), 6);
-          item.style.background = 'none';
-        }
-      };
-    })(item);
 
     var overlay = document.createElement('div');
     overlay.className = 'gallery__item-overlay';
@@ -189,7 +178,6 @@ window.addEventListener('beforeunload', function () {
   var lightboxImg = document.getElementById('lightboxImg');
   var lightboxCaption = document.getElementById('lightboxCaption');
   var currentIndex = 0;
-  var lbFail = false;
 
   function openLightbox(index) {
     currentIndex = index;
