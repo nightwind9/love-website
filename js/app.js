@@ -66,7 +66,7 @@ window.addEventListener('beforeunload', function () {
     ctx.restore();
   };
 
-  var maxPetals = 50;
+  var maxPetals = 30;
   function initPetals() {
     for (var i = 0; i < maxPetals; i++) {
       var p = new Petal();
