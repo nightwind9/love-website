@@ -352,8 +352,10 @@ button {
 }
 
 .gallery__grid {
-  column-count: 4;
-  column-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: auto;
+  gap: 16px;
 }
 
 .gallery__item {
@@ -363,19 +365,12 @@ button {
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
-  break-inside: avoid;
-  margin-bottom: 16px;
+  line-height: 0;
 }
 
 .gallery__item:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
-}
-
-.gallery__item-img {
-  width: 100%;
-  display: block;
-  line-height: 0;
 }
 
 .gallery__item-placeholder {
@@ -400,7 +395,6 @@ button {
   width: 100%;
   height: auto;
   display: block;
-  line-height: 0;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -1325,7 +1319,7 @@ button {
    ======================================== */
 @media (max-width: 1024px) {
   .gallery__grid {
-    column-count: 3;
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .timeline::before {
@@ -1398,18 +1392,12 @@ button {
   }
 
   .gallery__grid {
-    column-count: 2;
-    column-gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 
   .gallery__item {
-    margin-bottom: 10px;
-  }
-
-  .gallery__item:nth-child(3n+1),
-  .gallery__item:nth-child(5n+3) {
-    grid-row: span 1;
-    grid-column: span 1;
+    margin-bottom: 0;
   }
 
   .food__grid {
