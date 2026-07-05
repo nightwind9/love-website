@@ -418,7 +418,8 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .gallery__item-overlay {
@@ -675,7 +676,8 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .food__card-body {
