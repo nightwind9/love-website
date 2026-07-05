@@ -825,6 +825,46 @@ button {
 }
 
 /* ========================================
+   Flowers Section
+   ======================================== */
+.flowers {
+  padding: 100px 0;
+  background: var(--color-white);
+}
+
+.flowers__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.flowers__card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  aspect-ratio: 3 / 4;
+}
+
+.flowers__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.flowers__card-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(transparent, rgba(107, 58, 68, 0.65));
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+/* ========================================
    Music Section
    ======================================== */
 .music {
@@ -1332,6 +1372,9 @@ button {
     left: 14px !important;
     right: auto !important;
   }
+  .flowers__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* ========================================
@@ -1397,6 +1440,10 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .flowers__grid {
+    grid-template-columns: 1fr;
+  }
+
   .letter__cards {
     grid-template-columns: 1fr;
   }
@@ -1433,6 +1480,7 @@ button {
   .timeline-section,
   .food,
   .letter,
+  .flowers,
   .music {
     padding: 60px 0;
   }
