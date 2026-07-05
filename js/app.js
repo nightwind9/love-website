@@ -164,15 +164,32 @@ window.addEventListener('beforeunload', function () {
   for (var i = 0; i < photos.length; i++) {
     var item = document.createElement('div');
     item.className = 'gallery__item';
-    var gradient = 'linear-gradient(135deg, ' + placeholderColors[i][0] + ', ' + placeholderColors[i][1] + ')';
-    item.innerHTML =
-      '<div class="gallery__item-img gallery__item-img--placeholder" style="background:' + gradient + '">' +
-        '<span class="gallery__item-placeholder-icon">&#10087;</span>' +
-        '<img class="gallery__item-real" src="' + photos[i].src + '" alt="' + photos[i].alt + '" loading="lazy" ' +
-        'onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'block\'" ' +
-        'onload="this.style.display=\'block\'; this.previousElementSibling.style.display=\'none\'">' +
-      '</div>' +
-      '<div class="gallery__item-overlay">' + photos[i].alt + '</div>';
+    var gradient = 'linear-gradient(135deg, ' + placeholderColors[i % placeholderColors.length][0] + ', ' + placeholderColors[i % placeholderColors.length][1] + ')';
+    var imgWrapper = document.createElement('div');
+    imgWrapper.className = 'gallery__item-img gallery__item-img--placeholder';
+    imgWrapper.style.background = gradient;
+
+    var icon = document.createElement('span');
+    icon.className = 'gallery__item-placeholder-icon';
+    icon.innerHTML = '&#10087;';
+
+    var img = document.createElement('img');
+    img.className = 'gallery__item-real';
+    img.src = photos[i].src;
+    img.alt = photos[i].alt;
+    img.loading = 'lazy';
+    img.onload = function () { this.style.display = 'block'; };
+    img.onerror = function () { this.style.display = 'none'; };
+
+    imgWrapper.appendChild(icon);
+    imgWrapper.appendChild(img);
+
+    var overlay = document.createElement('div');
+    overlay.className = 'gallery__item-overlay';
+    overlay.textContent = photos[i].alt;
+
+    item.appendChild(imgWrapper);
+    item.appendChild(overlay);
     item.addEventListener('click', (function (idx) {
       return function () { openLightbox(idx); };
     })(i));
