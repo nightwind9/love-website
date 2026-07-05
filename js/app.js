@@ -306,7 +306,10 @@ window.addEventListener('beforeunload', function () {
     var img = document.createElement('img');
     img.className = 'food__card-real';
     img.src = foods[i].photo;
+    img.setAttribute('srcset', foods[i].photo.replace('/food/', '/food-sm/') + ' 400w, ' + foods[i].photo + ' 800w');
+    img.setAttribute('sizes', '(max-width: 768px) 100vw, 33vw');
     img.alt = foods[i].name;
+    img.loading = 'lazy';
 
     imgWrapper.appendChild(icon);
     imgWrapper.appendChild(img);
@@ -381,7 +384,10 @@ window.addEventListener('beforeunload', function () {
     var img = document.createElement('img');
     img.className = 'flowers__card-img';
     img.src = flowers[i].src;
+    img.setAttribute('srcset', flowers[i].src.replace('/flowers/', '/flowers-sm/') + ' 400w, ' + flowers[i].src + ' 800w');
+    img.setAttribute('sizes', '(max-width: 768px) 100vw, 33vw');
     img.alt = flowers[i].alt;
+    img.loading = 'lazy';
 
     var overlay = document.createElement('div');
     overlay.className = 'flowers__card-caption';
