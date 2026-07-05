@@ -1370,12 +1370,13 @@ button {
   }
 
   .gallery__grid {
-    column-count: 2;
-    column-gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 
   .gallery__item {
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
 
   .food__grid {
