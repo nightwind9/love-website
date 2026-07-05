@@ -183,8 +183,10 @@ window.addEventListener('beforeunload', function () {
     img.alt = photos[i].alt;
     img.onload = function () {
       this.style.opacity = '1';
-      if (this.parentNode) this.parentNode.querySelector('.gallery__item-placeholder').style.display = 'none';
-      layoutMasonry();
+      if (this.parentNode) {
+        var ph = this.parentNode.querySelector('.gallery__item-placeholder');
+        if (ph) ph.style.display = 'none';
+      }
     };
     img.onerror = function () { this.style.display = 'none'; };
 
@@ -200,44 +202,6 @@ window.addEventListener('beforeunload', function () {
     })(i));
     grid.appendChild(item);
   }
-
-  function layoutMasonry() {
-    var items = grid.querySelectorAll('.gallery__item');
-    var containerWidth = grid.clientWidth;
-    var cols = containerWidth < 500 ? 2 : containerWidth < 768 ? 3 : 4;
-    var gap = containerWidth < 500 ? 8 : 16;
-    var colWidth = (containerWidth - gap * (cols - 1)) / cols;
-    var colHeights = [];
-    for (var ci = 0; ci < cols; ci++) colHeights[ci] = 0;
-
-    for (var i2 = 0; i2 < items.length; i2++) {
-      var it = items[i2];
-      var realImg = it.querySelector('.gallery__item-real');
-      var h = realImg && realImg.style.opacity === '1' ? realImg.offsetHeight : 200;
-      var shortest = 0;
-      for (var ci = 1; ci < cols; ci++) {
-        if (colHeights[ci] < colHeights[shortest]) shortest = ci;
-      }
-      it.style.width = colWidth + 'px';
-      it.style.left = shortest * (colWidth + gap) + 'px';
-      it.style.top = colHeights[shortest] + 'px';
-      colHeights[shortest] += h + gap;
-    }
-
-    var maxH = 0;
-    for (var ci = 0; ci < cols; ci++) {
-      if (colHeights[ci] > maxH) maxH = colHeights[ci];
-    }
-    grid.style.height = (maxH || 400) + 'px';
-  }
-
-  var resizeTimeout;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(layoutMasonry, 200);
-  });
-
-  setTimeout(layoutMasonry, 100);
 
   var lightbox = document.getElementById('lightbox');
   var lightboxImg = document.getElementById('lightboxImg');
