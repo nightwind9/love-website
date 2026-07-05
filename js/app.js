@@ -128,25 +128,37 @@ window.addEventListener('beforeunload', function () {
 (function () {
   var grid = document.getElementById('galleryGrid');
   var photos = [
-    { src: '', alt: '我们的第一张合照' },
-    { src: '', alt: '一起看日落' },
-    { src: '', alt: '你的生日' },
-    { src: '', alt: '海边旅行' },
-    { src: '', alt: '一起做饭' },
-    { src: '', alt: '雨天散步' },
-    { src: '', alt: '跨年烟火' },
-    { src: '', alt: '我们的日常' },
+    { src: 'assets/images/gallery/IMG_20241215_132440.jpg', alt: '我们的合照 1' },
+    { src: 'assets/images/gallery/IMG_20250105_122448.jpg', alt: '我们的合照 2' },
+    { src: 'assets/images/gallery/MTXX_IMG_20250105_19321632.jpg', alt: '我们的合照 3' },
+    { src: 'assets/images/gallery/image_1739691710644.jpg', alt: '我们的合照 4' },
+    { src: 'assets/images/gallery/image_1743934278926.jpg', alt: '我们的合照 5' },
+    { src: 'assets/images/gallery/MTXX_IMG_20250502_12222379.jpg', alt: '我们的合照 6' },
+    { src: 'assets/images/gallery/IMG_20250809_185420.jpg', alt: '我们的合照 7' },
+    { src: 'assets/images/gallery/IMG_20250810_092943.jpg', alt: '我们的合照 8' },
+    { src: 'assets/images/gallery/IMG_20250810_125917.jpg', alt: '我们的合照 9' },
+    { src: 'assets/images/gallery/MTXX_IMG_20250810_10381285.jpg', alt: '我们的合照 10' },
+    { src: 'assets/images/gallery/IMG_20250821_145909.jpg', alt: '我们的合照 11' },
+    { src: 'assets/images/gallery/IMG_20260102_191916.jpg', alt: '我们的合照 12' },
+    { src: 'assets/images/gallery/IMG_20260208_112813.jpg', alt: '我们的合照 13' },
+    { src: 'assets/images/gallery/IMG_20260208_120436.jpg', alt: '我们的合照 14' },
+    { src: 'assets/images/gallery/image_1775474571851.jpg', alt: '我们的合照 15' },
+    { src: 'assets/images/gallery/MTXX_IMG_20260621_19131028.jpg', alt: '我们的合照 16' },
+    { src: 'assets/images/gallery/IMG_20260624_082440.jpg', alt: '我们的合照 17' },
+    { src: 'assets/images/gallery/IMG_7014.jpg', alt: '我们的合照 18' },
+    { src: 'assets/images/gallery/IMG_7022.jpg', alt: '我们的合照 19' },
+    { src: 'assets/images/gallery/HCH00408(1).jpg', alt: '我们的合照 20' },
+    { src: 'assets/images/gallery/HCH00456(1).jpg', alt: '我们的合照 21' },
   ];
 
   var placeholderColors = [
-    ['#FCE4EC', '#F0C0C8'],
-    ['#FDE8EE', '#F2C4CC'],
-    ['#FEEBF0', '#F5C8D0'],
-    ['#FBE0E8', '#EEC0C8'],
-    ['#FDE8EE', '#F0C4CC'],
-    ['#FCE4EC', '#F0C0C8'],
-    ['#FDE8EE', '#F2C4CC'],
-    ['#FEEBF0', '#F5C8D0'],
+    ['#FCE4EC', '#F0C0C8'], ['#FDE8EE', '#F2C4CC'], ['#FEEBF0', '#F5C8D0'],
+    ['#FBE0E8', '#EEC0C8'], ['#FDE8EE', '#F0C4CC'], ['#FCE4EC', '#F0C0C8'],
+    ['#FDE8EE', '#F2C4CC'], ['#FEEBF0', '#F5C8D0'], ['#FBE0E8', '#EEC0C8'],
+    ['#FDE8EE', '#F0C4CC'], ['#FCE4EC', '#F0C0C8'], ['#FDE8EE', '#F2C4CC'],
+    ['#FEEBF0', '#F5C8D0'], ['#FBE0E8', '#EEC0C8'], ['#FDE8EE', '#F0C4CC'],
+    ['#FCE4EC', '#F0C0C8'], ['#FDE8EE', '#F2C4CC'], ['#FEEBF0', '#F5C8D0'],
+    ['#FBE0E8', '#EEC0C8'], ['#FDE8EE', '#F0C4CC'], ['#FCE4EC', '#F0C0C8'],
   ];
 
   for (var i = 0; i < photos.length; i++) {
@@ -156,6 +168,9 @@ window.addEventListener('beforeunload', function () {
     item.innerHTML =
       '<div class="gallery__item-img gallery__item-img--placeholder" style="background:' + gradient + '">' +
         '<span class="gallery__item-placeholder-icon">&#10087;</span>' +
+        '<img class="gallery__item-real" src="' + photos[i].src + '" alt="' + photos[i].alt + '" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'block\'" ' +
+        'onload="this.style.display=\'block\'; this.previousElementSibling.style.display=\'none\'">' +
       '</div>' +
       '<div class="gallery__item-overlay">' + photos[i].alt + '</div>';
     item.addEventListener('click', (function (idx) {
@@ -168,25 +183,54 @@ window.addEventListener('beforeunload', function () {
   var lightboxImg = document.getElementById('lightboxImg');
   var lightboxCaption = document.getElementById('lightboxCaption');
   var currentIndex = 0;
+  var lbFail = false;
 
   function openLightbox(index) {
     currentIndex = index;
-    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
+    lbFail = false;
+    lightboxImg.removeAttribute('src');
     lightboxImg.style.display = 'none';
+    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
     lightboxImg.style.background = gradient;
     lightboxImg.style.minWidth = '300px';
     lightboxImg.style.minHeight = '200px';
     lightboxCaption.textContent = photos[index].alt;
+    if (photos[index].src) {
+      var testImg = new Image();
+      testImg.onload = function () {
+        if (currentIndex === index) {
+          lightboxImg.style.background = 'none';
+          lightboxImg.style.display = '';
+          lightboxImg.src = photos[index].src;
+        }
+      };
+      testImg.onerror = function () {};
+      testImg.src = photos[index].src;
+    }
     lightbox.classList.add('lightbox--active');
     document.body.style.overflow = 'hidden';
   }
 
   function showPlaceholder(index) {
-    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
+    lbFail = false;
+    lightboxImg.removeAttribute('src');
     lightboxImg.style.display = 'none';
+    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
     lightboxImg.style.background = gradient;
     lightboxImg.style.minWidth = '300px';
     lightboxImg.style.minHeight = '200px';
+    if (photos[index].src) {
+      var testImg = new Image();
+      testImg.onload = function () {
+        if (currentIndex === index) {
+          lightboxImg.style.background = 'none';
+          lightboxImg.style.display = '';
+          lightboxImg.src = photos[index].src;
+        }
+      };
+      testImg.onerror = function () {};
+      testImg.src = photos[index].src;
+    }
   }
 
   function closeLightbox() {
@@ -266,24 +310,28 @@ window.addEventListener('beforeunload', function () {
       name: '街头小笼包',
       place: '上海 · 老弄堂',
       desc: '你第一次带我去吃的小笼包，汤汁很烫但好吃到停不下来。',
+      photo: 'assets/images/food/food-1.jpg',
       color: '#FCE4EC'
     },
     {
       name: '深夜烧烤摊',
       place: '家门口 · 路边摊',
       desc: '每次加班晚了你都会等我一起吃夜宵，烤鸡翅永远是必点。',
+      photo: 'assets/images/food/food-2.jpg',
       color: '#FDE8EE'
     },
     {
       name: '日料定食',
       place: '人均300+ · 纪念日餐厅',
       desc: '一周年纪念那天去的，你说三文鱼刺身好吃到眯眼睛的样子太可爱了。',
+      photo: 'assets/images/food/food-3.jpg',
       color: '#FBE0E8'
     },
     {
       name: '手作甜点',
       place: '家里 · 你的厨房',
       desc: '你第一次给我做蛋糕，虽然形状不太完美，但我觉得比任何蛋糕店都好吃。',
+      photo: 'assets/images/food/food-4.jpg',
       color: '#FEEBF0'
     },
   ];
@@ -296,6 +344,8 @@ window.addEventListener('beforeunload', function () {
     card.innerHTML =
       '<div class="food__card-img food__card-img--placeholder" style="background:' + gradient + '">' +
         '<span class="food__card-placeholder-icon">&#127860;</span>' +
+        (foods[i].photo ? '<img class="food__card-real" src="' + foods[i].photo + '" alt="' + foods[i].name + '" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'" onload="this.style.display=\'block\'; this.previousElementSibling.style.display=\'none\'">' : '') +
       '</div>' +
       '<div class="food__card-body">' +
         '<h3 class="food__card-title">' + foods[i].name + '</h3>' +
