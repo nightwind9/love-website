@@ -160,7 +160,10 @@ window.addEventListener('beforeunload', function () {
     var img = document.createElement('img');
     img.className = 'gallery__item-real';
     img.src = photos[i].src;
+    img.setAttribute('srcset', photos[i].src.replace('gallery/', 'gallery-sm/') + ' 400w, ' + photos[i].src + ' 800w');
+    img.setAttribute('sizes', '(max-width: 768px) 50vw, 25vw');
     img.alt = photos[i].alt;
+    img.loading = 'lazy';
 
     var overlay = document.createElement('div');
     overlay.className = 'gallery__item-overlay';
