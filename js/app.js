@@ -177,9 +177,8 @@ window.addEventListener('beforeunload', function () {
     img.className = 'gallery__item-real';
     img.src = photos[i].src;
     img.alt = photos[i].alt;
-    img.loading = 'lazy';
-    img.onload = function () { this.style.display = 'block'; };
-    img.onerror = function () { this.style.display = 'none'; };
+    img.onload = function () { this.style.opacity = '1'; };
+    img.onerror = function () { this.style.opacity = '0'; };
 
     imgWrapper.appendChild(icon);
     imgWrapper.appendChild(img);
