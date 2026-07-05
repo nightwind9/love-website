@@ -304,8 +304,6 @@ window.addEventListener('beforeunload', function () {
     img.className = 'food__card-real';
     img.src = foods[i].photo;
     img.alt = foods[i].name;
-    img.onload = function () { this.style.opacity = '1'; };
-    img.onerror = function () { this.style.opacity = '0'; };
 
     imgWrapper.appendChild(icon);
     imgWrapper.appendChild(img);
