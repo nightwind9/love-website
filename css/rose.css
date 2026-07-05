@@ -378,7 +378,7 @@ button {
   line-height: 0;
 }
 
-.gallery__item-img--placeholder {
+.gallery__item-placeholder {
   min-height: 200px;
   display: flex;
   align-items: center;
