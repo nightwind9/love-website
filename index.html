@@ -17,6 +17,7 @@
     <ul class="nav__list">
       <li><a href="#hero" class="nav__link nav__link--active"><span class="nav__link-name">开始</span></a></li>
       <li><a href="#timer" class="nav__link"><span class="nav__link-name">时光</span></a></li>
+      <li><a href="#vacation" class="nav__link"><span class="nav__link-name">假期</span></a></li>
       <li><a href="#gallery" class="nav__link"><span class="nav__link-name">相册</span></a></li>
       <li><a href="#timeline" class="nav__link"><span class="nav__link-name">点滴</span></a></li>
       <li><a href="#food" class="nav__link"><span class="nav__link-name">食谱</span></a></li>
@@ -69,7 +70,18 @@
     </div>
   </section>
 
-  <!-- ====== 3. 照片回忆墙 ====== -->
+  <!-- ====== 3. 假期倒计时 ====== -->
+  <section class="vacation" id="vacation">
+    <div class="container">
+      <h2 class="section-title">假期倒计时</h2>
+      <p class="section-desc">期待和你一起度过的每一个假期</p>
+      <div class="vacation__grid" id="vacationGrid">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 4. 照片回忆墙 ====== -->
   <section class="gallery" id="gallery">
     <div class="container">
       <h2 class="section-title">照片回忆墙</h2>
@@ -89,7 +101,7 @@
     <p class="lightbox__caption" id="lightboxCaption"></p>
   </div>
 
-  <!-- ====== 4. 重要时刻时间线 ====== -->
+  <!-- ====== 5. 重要时刻时间线 ====== -->
   <section class="timeline-section" id="timeline">
     <div class="container">
       <h2 class="section-title">重要时刻</h2>
@@ -100,7 +112,7 @@
     </div>
   </section>
 
-  <!-- ====== 5. 食谱地图 ====== -->
+  <!-- ====== 6. 食谱地图 ====== -->
   <section class="food" id="food">
     <div class="container">
       <h2 class="section-title">我们的美食地图</h2>
@@ -111,7 +123,7 @@
     </div>
   </section>
 
-  <!-- ====== 6. 情书留言板 ====== -->
+  <!-- ====== 7. 情书留言板 ====== -->
   <section class="letter" id="letter">
     <div class="container">
       <h2 class="section-title">写给你的话</h2>
@@ -122,7 +134,7 @@
     </div>
   </section>
 
-  <!-- ====== 7. 花语 ====== -->
+  <!-- ====== 8. 花语 ====== -->
   <section class="flowers" id="flowers">
     <div class="container">
       <h2 class="section-title">花语</h2>
@@ -133,7 +145,7 @@
     </div>
   </section>
 
-  <!-- ====== 8. 音乐角落 ====== -->
+  <!-- ====== 9. 音乐角落 ====== -->
   <section class="music" id="music">
     <div class="container">
       <h2 class="section-title">音乐角落</h2>
@@ -178,7 +190,7 @@
     </div>
   </section>
 
-  <!-- ====== 9. 页脚 ====== -->
+  <!-- ====== 10. 页脚 ====== -->
   <footer class="footer" id="footer">
     <div class="container">
       <p class="footer__text">谢谢你出现在我的生命里</p>
@@ -193,6 +205,6 @@
   <!-- 隐藏的音频播放器 -->
   <audio id="bgAudio" preload="auto"></audio>
 
-  <script src="js/app.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
