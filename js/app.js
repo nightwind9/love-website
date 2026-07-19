@@ -1,4 +1,4 @@
-/* love-website v20260705 - no background music */
+/* love-website v20260719 - breeze-love-mq */
 /* ========================================
    Prevent browser auto-scroll on refresh
    ======================================== */
@@ -120,6 +120,75 @@ window.addEventListener('beforeunload', function () {
     since.textContent = '从 ' + y + '年' + m + '月' + d + '日 开始';
   }
 
+})();
+
+/* ========================================
+   Vacation Countdown
+   ======================================== */
+(function () {
+  var grid = document.getElementById('vacationGrid');
+  if (!grid) return;
+
+  var events = [
+    { name: '七夕情人节', date: '2026-08-29', icon: '🎋', desc: '中国情人节' },
+    { name: '中秋团圆', date: '2026-09-25', icon: '🌕', desc: '一起吃月饼' },
+    { name: '国庆小长假', date: '2026-10-01', icon: '🇨🇳', desc: '七天假期' },
+    { name: '元旦跨年', date: '2027-01-01', icon: '🎆', desc: '一起倒数' },
+    { name: '春节过年', date: '2027-01-29', icon: '🧧', desc: '回家团圆' },
+    { name: '纪念日旅行', date: '2026-11-02', icon: '✈️', desc: '两周年纪念' },
+  ];
+
+  function formatDate(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+
+  function calcDays(targetDate) {
+    var now = new Date();
+    var target = new Date(targetDate + 'T00:00:00');
+    return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  }
+
+  var cards = [];
+  for (var i = 0; i < events.length; i++) {
+    var card = document.createElement('div');
+    card.className = 'vacation__card reveal';
+
+    card.innerHTML =
+      '<span class="vacation__card-icon">' + events[i].icon + '</span>' +
+      '<div class="vacation__card-name">' + events[i].name + '</div>' +
+      '<div class="vacation__card-date">' + formatDate(events[i].date) + ' · ' + events[i].desc + '</div>' +
+      '<div class="vacation__card-countdown">' +
+        '<span class="vacation__card-number" data-date="' + events[i].date + '">--</span>' +
+        '<span class="vacation__card-unit">天</span>' +
+      '</div>';
+
+    grid.appendChild(card);
+    cards.push(card);
+  }
+
+  function updateAll() {
+    for (var i = 0; i < events.length; i++) {
+      var numberEl = cards[i].querySelector('.vacation__card-number');
+      var days = calcDays(events[i].date);
+
+      if (days < 0) {
+        cards[i].classList.add('vacation__card--passed');
+        numberEl.textContent = '已过';
+      } else if (days === 0) {
+        cards[i].classList.add('vacation__card--soon');
+        numberEl.textContent = '今天';
+      } else {
+        numberEl.textContent = days;
+        if (days <= 30) {
+          cards[i].classList.add('vacation__card--soon');
+        }
+      }
+    }
+  }
+
+  updateAll();
+  setInterval(updateAll, 60000);
 })();
 
 /* ========================================
@@ -323,8 +392,6 @@ window.addEventListener('beforeunload', function () {
 
     card.appendChild(imgWrapper);
     card.appendChild(body);
-        '<p class="food__card-desc">' + foods[i].desc + '</p>' +
-      '</div>';
     foodGrid.appendChild(card);
   }
 })();
@@ -409,17 +476,17 @@ window.addEventListener('beforeunload', function () {
 
   // Song playlist (replace with your own audio files)
   var songs = [
-    { title: '星晴', artist: '周杰伦', file: 'assets/audio/星晴.mp3' },
-    { title: '明天过后', artist: '', file: 'assets/audio/明天过后.m4a' },
-    { title: '蝴蝶 love u~', artist: '', file: 'assets/audio/蝴蝶_love u~.m4a' },
-    { title: '梦祺起床啦', artist: '', file: 'assets/audio/梦祺起床啦.mp3' },
+    { title: '星晴', artist: '继伟', file: 'assets/audio/星晴.mp3' },
+    { title: '明天过后', artist: '继伟', file: 'assets/audio/明天过后.m4a' },
+    { title: '蝴蝶 love u~', artist: '继伟', file: 'assets/audio/蝴蝶_love u~.m4a' },
+    { title: '梦祺起床啦', artist: '继伟', file: 'assets/audio/梦祺起床啦.mp3' },
   ];
 
   // Voice recordings
   var recordings = [
-    { name: '梦祺起床啦.mp3', date: '录制时间', file: 'assets/audio/梦祺起床啦.mp3' },
-    { name: '明天过后.m4a', date: '录制时间', file: 'assets/audio/明天过后.m4a' },
-    { name: '蝴蝶 love u~.m4a', date: '录制时间', file: 'assets/audio/蝴蝶_love u~.m4a' },
+    { name: '梦祺起床啦', date: '录制时间', file: 'assets/audio/梦祺起床啦.mp3' },
+    { name: '明天过后', date: '录制时间', file: 'assets/audio/明天过后.m4a' },
+    { name: '蝴蝶 love u~', date: '录制时间', file: 'assets/audio/蝴蝶_love u~.m4a' },
   ];
 
   var currentTrack = -1;
@@ -439,11 +506,36 @@ window.addEventListener('beforeunload', function () {
       track.addEventListener('click', function () {
         playTrack(idx);
         if (songs[idx].file) {
+          var playBtn = document.getElementById('musicPlay');
+          var disc = document.getElementById('musicDisc');
+          playBtn.innerHTML = '⏳';
+          disc.classList.add('music__disc--playing');
           audio.src = songs[idx].file;
-          audio.play();
-          isPlaying = true;
-          updatePlayBtn();
-          updateDisc();
+          audio.load();
+
+          var onProgress = function () {
+            if (audio.buffered.length > 0) {
+              var pct = Math.round((audio.buffered.end(audio.buffered.length - 1) / audio.duration) * 100);
+              if (pct > 0 && pct < 100) playBtn.innerHTML = pct + '%';
+            }
+          };
+          audio.addEventListener('progress', onProgress);
+
+          audio.addEventListener('canplay', function whenReady() {
+            audio.removeEventListener('canplay', whenReady);
+            audio.removeEventListener('progress', onProgress);
+            audio.play();
+            isPlaying = true;
+            updatePlayBtn();
+            updateDisc();
+          }, { once: true });
+
+          audio.addEventListener('error', function onErr() {
+            audio.removeEventListener('error', onErr);
+            audio.removeEventListener('progress', onProgress);
+            playBtn.innerHTML = '⚠';
+            playTrack(-1);
+          }, { once: true });
         }
       });
       playlist.appendChild(track);
@@ -458,7 +550,7 @@ window.addEventListener('beforeunload', function () {
       rec.innerHTML =
         '<div class="music__recording-icon">🎙️</div>' +
         '<div class="music__recording-info">' +
-          '<div class="music__recording-name">' + recordings[idx].name + '</div>' +
+          '<div class="music__recording-name">' + recordings[idx].name.replace(/\.\w+$/, '') + '</div>' +
           '<div class="music__recording-date">' + recordings[idx].date + '</div>' +
         '</div>' +
         '<button class="music__recording-play" title="播放">▶</button>';
@@ -470,13 +562,24 @@ window.addEventListener('beforeunload', function () {
             audio.pause();
             isPlaying = false;
             playBtn.textContent = '▶';
+            playTrack(-1);
             updateDisc();
           } else {
+            playTrack(-1);
+            document.getElementById('musicTitle').textContent = recordings[idx].name.replace(/\.\w+$/, '');
+            document.getElementById('musicArtist').textContent = recordings[idx].date;
+            var pBtn = document.getElementById('musicPlay');
+            pBtn.innerHTML = '⏳';
             audio.src = recordings[idx].file;
-            audio.play();
-            isPlaying = true;
-            playBtn.textContent = '⏸';
-            updateDisc();
+            audio.load();
+            audio.addEventListener('canplay', function whenReady() {
+              audio.removeEventListener('canplay', whenReady);
+              audio.play();
+              isPlaying = true;
+              pBtn.innerHTML = '⏸';
+              playBtn.textContent = '⏸';
+              document.getElementById('musicDisc').classList.add('music__disc--playing');
+            }, { once: true });
           }
         }
       });
@@ -537,11 +640,27 @@ window.addEventListener('beforeunload', function () {
 
   function switchAndPlay(idx) {
     if (songs[idx].file) {
+      var playBtn = document.getElementById('musicPlay');
+      playBtn.innerHTML = '⏳';
       audio.src = songs[idx].file;
-      audio.play();
-      isPlaying = true;
-      updatePlayBtn();
-      updateDisc();
+      audio.load();
+
+      var onProgress = function () {
+        if (audio.buffered.length > 0) {
+          var pct = Math.round((audio.buffered.end(audio.buffered.length - 1) / audio.duration) * 100);
+          if (pct > 0 && pct < 100) playBtn.innerHTML = pct + '%';
+        }
+      };
+      audio.addEventListener('progress', onProgress);
+
+      audio.addEventListener('canplay', function whenReady() {
+        audio.removeEventListener('canplay', whenReady);
+        audio.removeEventListener('progress', onProgress);
+        audio.play();
+        isPlaying = true;
+        updatePlayBtn();
+        updateDisc();
+      }, { once: true });
     }
   }
 
@@ -595,6 +714,7 @@ window.addEventListener('beforeunload', function () {
     playTrack(next);
     switchAndPlay(next);
   });
+
 })();
 
 /* ========================================
