@@ -470,6 +470,7 @@ button {
 .gallery__grid {
   column-count: 4;
   column-gap: 8px;
+  column-fill: balance;
 }
 
 .gallery__item {
@@ -1545,4 +1546,73 @@ button {
   .music {
     padding: 60px 0;
   }
+}
+
+/* ========================================
+   Memory Card
+   ======================================== */
+.memory-card {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: 900;
+  width: 280px;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.memory-card--active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.memory-card__close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.1);
+  color: var(--color-text-light);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memory-card__inner {
+  padding: 16px;
+}
+
+.memory-card__label {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.memory-card__text {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.memory-card__img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  max-height: 160px;
+  object-fit: cover;
 }
