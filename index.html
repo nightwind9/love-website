@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/rose.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
   <!-- 全局导航 -->
@@ -201,6 +201,16 @@
 
   <!-- 回到顶部 -->
   <button class="back-to-top" id="backToTop" title="回到顶部">&#8593;</button>
+
+  <!-- 随机回忆卡 -->
+  <div class="memory-card" id="memoryCard">
+    <button class="memory-card__close" id="memoryClose">&times;</button>
+    <div class="memory-card__inner">
+      <div class="memory-card__label">回忆便签</div>
+      <p class="memory-card__text" id="memoryText"></p>
+      <img class="memory-card__img" id="memoryImg" src="" alt="">
+    </div>
+  </div>
 
   <!-- 隐藏的音频播放器 -->
   <audio id="bgAudio" preload="auto"></audio>
