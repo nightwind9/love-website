@@ -484,9 +484,9 @@ window.addEventListener('beforeunload', function () {
 
   // Voice recordings
   var recordings = [
-    { name: '梦祺起床啦', date: '录制时间', file: 'assets/audio/梦祺起床啦.mp3' },
-    { name: '明天过后', date: '录制时间', file: 'assets/audio/明天过后.m4a' },
-    { name: '蝴蝶 love u~', date: '录制时间', file: 'assets/audio/蝴蝶_love u~.m4a' },
+    { name: '梦祺起床啦', date: '继伟', file: 'assets/audio/梦祺起床啦.mp3' },
+    { name: '明天过后', date: '继伟', file: 'assets/audio/明天过后.m4a' },
+    { name: '蝴蝶 love u~', date: '继伟', file: 'assets/audio/蝴蝶_love u~.m4a' },
   ];
 
   var currentTrack = -1;
