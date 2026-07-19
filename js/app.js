@@ -371,13 +371,13 @@ window.addEventListener('beforeunload', function () {
 (function () {
   var foodGrid = document.getElementById('foodGrid');
   var foods = [
-    { name: '街头小笼包', place: '上海 · 老弄堂', desc: '你第一次带我去吃的小笼包，汤汁很烫但好吃到停不下来。', photo: 'assets/images/food/img-17318372933971731837122934_by_crop.jpg' },
-    { name: '深夜烧烤摊', place: '家门口 · 路边摊', desc: '每次加班晚了你都会等我一起吃夜宵，烤鸡翅永远是必点。', photo: 'assets/images/food/IMG_20250607_135722.jpg' },
-    { name: '日料定食', place: '纪念日餐厅', desc: '一周年纪念那天去的，三文鱼刺身好吃到眯眼睛。', photo: 'assets/images/food/IMG_20250608_112540.jpg' },
-    { name: '手作甜点', place: '家里 · 你的小厨房', desc: '你给我做的蛋糕，形状不太完美但比蛋糕店好吃一百倍。', photo: 'assets/images/food/IMG_20260102_211433.jpg' },
-    { name: '一起撸串', place: '街角夜宵摊', desc: '夏天的夜晚总是要去撸串的，配一瓶冰可乐刚刚好。', photo: 'assets/images/food/微信图片_20260705115234_3676_1.jpg' },
-    { name: '火锅之夜', place: '海底捞 · 我们的老地方', desc: '冬天最幸福的事就是和你一起吃火锅，涮到最后还要喝汤。', photo: 'assets/images/food/微信图片_20260705115235_3677_1.jpg' },
-    { name: '下午茶时光', place: '咖啡厅 · 窗边的位置', desc: '周末的下午，一起窝在咖啡厅，你喝拿铁我喝美式。', photo: 'assets/images/food/微信图片_20260705115537_3678_1.jpg' },
+    { name: '第一次给你做饭', place: '家里 · 崴脚后的厨房', desc: '你崴脚后我给你做的第一顿饭。你坐着整理蔬菜，我在旁边切菜做饭，有说有笑，还教你颠勺。', photo: 'assets/images/food/img-17318372933971731837122934_by_crop.jpg' },
+    { name: '曼塔玫瑰·螃蟹·牛肉', place: '2025年6月', desc: '我们一起买的曼塔玫瑰，老板说我眼光好，除了花还有人～然后给你蒸了螃蟹，做了爆炒牛肉，虽然有点咸，毕竟我们盐值太高。', photo: 'assets/images/food/IMG_20250607_135722.jpg' },
+    { name: '热干面+拿铁', place: '中西结合小厨房', desc: '给你做心心念念的热干面，你给我泡了拿铁，中西结合，天下无敌。', photo: 'assets/images/food/IMG_20250608_112540.jpg' },
+    { name: '我们一起做的小饼干', place: '烘焙教室', desc: '一起去做小饼干，和其他小朋友一起学习。你有技术我有创意，你做的全进肚子了，我不舍得，留作纪念。', photo: 'assets/images/food/IMG_20260102_211433.jpg' },
+    { name: '中西结合套餐', place: '温馨早餐时光', desc: '拿铁配玉米，加两个水煮蛋，以后都考满分。', photo: 'assets/images/food/微信图片_20260705115234_3676_1.jpg' },
+    { name: '自制牛排套餐', place: '中午的漂亮饭', desc: '自制牛排套餐，摆盘即刻开店。你的是笑脸，我的是黑脸，可能到了夏天就会是这样的结果。', photo: 'assets/images/food/微信图片_20260705115235_3677_1.jpg' },
+    { name: '一周年·21cake', place: '我们的一周年', desc: '一起买的21cake，一百岁是我们的愿望，所以争取吃一百个蛋糕，就在这一生。', photo: 'assets/images/food/微信图片_20260705115537_3678_1.jpg' },
   ];
 
   var foodPlaceholderColors = [
