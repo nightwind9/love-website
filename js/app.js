@@ -120,6 +120,31 @@ window.addEventListener('beforeunload', function () {
     since.textContent = '从 ' + y + '年' + m + '月' + d + '日 开始';
   }
 
+  var specialDays = [100, 200, 300, 365, 400, 500, 520, 600, 666, 700, 800, 900, 999, 1000, 1111, 1314];
+  var lastShown = -1;
+
+  function checkEasterEgg(diff) {
+    for (var i = 0; i < specialDays.length; i++) {
+      if (diff === specialDays[i] && diff !== lastShown) {
+        lastShown = diff;
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#E89AAA,#F5C6D0);color:#fff;padding:14px 28px;border-radius:24px;font-size:1.1rem;font-weight:700;z-index:999;box-shadow:0 4px 20px rgba(232,154,170,0.4);animation:fadeInUp 0.6s ease;text-align:center;';
+        toast.textContent = '✨ 我们已经在一起 ' + diff + ' 天啦！💕';
+        document.body.appendChild(toast);
+        setTimeout(function () { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.6s'; setTimeout(function () { toast.remove(); }, 600); }, 3500);
+        break;
+      }
+    }
+  }
+
+  var origUpdate = updateTimer;
+  updateTimer = function () {
+    origUpdate();
+    var start = new Date(anniversaryDate + 'T00:00:00');
+    var diff = Math.floor((new Date() - start) / (1000 * 60 * 60 * 24));
+    checkEasterEgg(diff);
+  };
+
 })();
 
 /* ========================================
@@ -715,6 +740,44 @@ window.addEventListener('beforeunload', function () {
     switchAndPlay(next);
   });
 
+})();
+
+/* ========================================
+   Random Memory Card
+   ======================================== */
+(function () {
+  var card = document.getElementById('memoryCard');
+  var text = document.getElementById('memoryText');
+  var img = document.getElementById('memoryImg');
+  var close = document.getElementById('memoryClose');
+  var shown = sessionStorage.getItem('memoryCardShown');
+
+  if (shown) return;
+
+  var memories = [];
+  var letters = document.querySelectorAll('.letter__envelope-back p');
+  for (var i = 0; i < letters.length; i++) {
+    if (letters[i].textContent) memories.push({ type: 'text', content: letters[i].textContent });
+  }
+  var galleryItems = document.querySelectorAll('.gallery__item-real');
+  if (galleryItems.length > 0) {
+    memories.push({ type: 'photo', content: '每一张照片都是我们最珍贵的回忆', img: galleryItems[Math.floor(Math.random() * galleryItems.length)].src });
+  }
+  memories.push({ type: 'text', content: '和你在一起的每一天，都是最特别的日子 ❤️' });
+
+  var pick = memories[Math.floor(Math.random() * memories.length)];
+
+  setTimeout(function () {
+    text.textContent = pick.content;
+    if (pick.img) img.src = pick.img;
+    else img.style.display = 'none';
+    card.classList.add('memory-card--active');
+    sessionStorage.setItem('memoryCardShown', '1');
+  }, 5000);
+
+  close.addEventListener('click', function () {
+    card.classList.remove('memory-card--active');
+  });
 })();
 
 /* ========================================
