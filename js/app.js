@@ -155,7 +155,7 @@ window.addEventListener('beforeunload', function () {
   if (!grid) return;
 
   var events = [
-    { name: '七夕情人节', date: '2026-08-29', icon: '🎋', desc: '中国情人节' },
+    { name: '七夕情人节', date: '2026-08-19', icon: '🎋', desc: '中国情人节' },
     { name: '中秋团圆', date: '2026-09-25', icon: '🌕', desc: '一起吃月饼' },
     { name: '国庆小长假', date: '2026-10-01', icon: '🇨🇳', desc: '七天假期' },
     { name: '元旦跨年', date: '2027-01-01', icon: '🎆', desc: '一起倒数' },
