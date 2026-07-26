@@ -1578,6 +1578,10 @@ button {
   z-index: 1;
 }
 
+.travel__map .leaflet-tile {
+  filter: sepia(12%) saturate(70%) hue-rotate(-15deg) brightness(1.08);
+}
+
 /* Custom Leaflet marker - heart */
 .leaflet-marker-icon.heart-marker {
   width: 30px;
