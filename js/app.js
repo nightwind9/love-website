@@ -778,6 +778,159 @@ window.addEventListener('beforeunload', function () {
 })();
 
 /* ========================================
+   Memory Card Game
+   ======================================== */
+(function () {
+  var overlay = document.getElementById('gameOverlay');
+  var board = document.getElementById('gameBoard');
+  var timerEl = document.getElementById('gameTimer');
+  var stepsEl = document.getElementById('gameSteps');
+  var matchEl = document.getElementById('gameMatch');
+  var totalEl = document.getElementById('gameTotal');
+  var winEl = document.getElementById('gameWin') || document.createElement('div');
+
+  var cards = [];
+  var flipped = [];
+  var matched = 0;
+  var totalPairs = 6;
+  var steps = 0;
+  var timer = 0;
+  var timerInterval = null;
+  var locked = false;
+
+  function getPhotos() {
+    var imgs = document.querySelectorAll('.gallery__item-real');
+    var srcs = [];
+    for (var i = 0; i < Math.min(imgs.length, 12); i++) {
+      if (imgs[i].src) srcs.push(imgs[i].src);
+    }
+    while (srcs.length < totalPairs) srcs.push(srcs[0] || '');
+    return srcs.slice(0, totalPairs);
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function startGame(pairs) {
+    totalPairs = pairs;
+    matched = 0;
+    steps = 0;
+    flipped = [];
+    locked = false;
+    timer = 0;
+    if (timerInterval) clearInterval(timerInterval);
+
+    timerEl.textContent = '0';
+    stepsEl.textContent = '0';
+    matchEl.textContent = '0';
+    totalEl.textContent = totalPairs;
+    board.style.gridTemplateColumns = pairs === 6 ? 'repeat(4, 1fr)' : 'repeat(4, 1fr)';
+
+    var photos = getPhotos();
+    var deck = [];
+    for (var p = 0; p < totalPairs; p++) {
+      deck.push(photos[p]); deck.push(photos[p]);
+    }
+    deck = shuffle(deck);
+
+    board.innerHTML = '';
+    cards = [];
+    for (var d = 0; d < deck.length; d++) {
+      var card = document.createElement('div');
+      card.className = 'game__card';
+      card.setAttribute('data-index', d);
+      card.setAttribute('data-value', deck[d]);
+      card.innerHTML =
+        '<div class="game__card-inner">' +
+          '<div class="game__card-front">❤</div>' +
+          '<div class="game__card-back"><img src="' + deck[d] + '" alt=""></div>' +
+        '</div>';
+      card.addEventListener('click', function () { flipCard(this); });
+      board.appendChild(card);
+      cards.push(card);
+    }
+
+    timerInterval = setInterval(function () {
+      timer++;
+      timerEl.textContent = timer;
+    }, 1000);
+  }
+
+  function flipCard(card) {
+    if (locked) return;
+    var idx = parseInt(card.getAttribute('data-index'));
+    if (flipped.indexOf(idx) >= 0 || card.classList.contains('game__card--matched')) return;
+
+    card.classList.add('game__card--flipped');
+    flipped.push(idx);
+
+    if (flipped.length === 2) {
+      steps++;
+      stepsEl.textContent = steps;
+      locked = true;
+
+      var c1 = cards[flipped[0]];
+      var c2 = cards[flipped[1]];
+      var v1 = c1.getAttribute('data-value');
+      var v2 = c2.getAttribute('data-value');
+
+      if (v1 === v2) {
+        c1.classList.add('game__card--matched');
+        c2.classList.add('game__card--matched');
+        matched++;
+        matchEl.textContent = matched;
+        flipped = [];
+        locked = false;
+
+        if (matched === totalPairs) {
+          clearInterval(timerInterval);
+          var w = document.createElement('div');
+          w.className = 'game__win game__win--active';
+          w.textContent = '🎉 太棒了！' + steps + ' 步完成，用时 ' + timer + ' 秒！';
+          board.insertAdjacentElement('beforebegin', w);
+          winEl = w;
+          setTimeout(function () { if (w.parentNode) w.remove(); }, 4000);
+        }
+      } else {
+        setTimeout(function () {
+          c1.classList.remove('game__card--flipped');
+          c2.classList.remove('game__card--flipped');
+          flipped = [];
+          locked = false;
+        }, 700);
+      }
+    }
+  }
+
+  document.getElementById('gameEntryBtn').addEventListener('click', function () {
+    overlay.classList.add('game-overlay--active');
+    startGame(6);
+  });
+
+  document.getElementById('gameClose').addEventListener('click', function () {
+    overlay.classList.remove('game-overlay--active');
+    if (timerInterval) clearInterval(timerInterval);
+  });
+
+  document.getElementById('gameEasy').addEventListener('click', function () { startGame(6); });
+  document.getElementById('gameHard').addEventListener('click', function () { startGame(8); });
+  document.getElementById('gameRestart').addEventListener('click', function () { startGame(totalPairs); });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('game-overlay--active');
+      if (timerInterval) clearInterval(timerInterval);
+    }
+  });
+})();
+
+/* ========================================
    Heart Click Effect
    ======================================== */
 (function () {
