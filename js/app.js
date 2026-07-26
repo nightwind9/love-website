@@ -489,6 +489,82 @@ window.addEventListener('beforeunload', function () {
 })();
 
 /* ========================================
+   Travel Map
+   ======================================== */
+(function () {
+  var mapContainer = document.getElementById('travelMap');
+  if (!mapContainer) return;
+
+  var travels = [
+    { city: '东莞松山湖', lat: 22.90, lng: 113.88, date: '', desc: '', photo: '' },
+    { city: '深圳', lat: 22.54, lng: 114.06, date: '', desc: '', photo: '' },
+    { city: '上海', lat: 31.23, lng: 121.47, date: '', desc: '', photo: '' },
+    { city: '景德镇', lat: 29.27, lng: 117.18, date: '', desc: '', photo: '' },
+    { city: '香港', lat: 22.32, lng: 114.17, date: '', desc: '', photo: '' },
+    { city: '贵州', lat: 26.60, lng: 106.71, date: '', desc: '', photo: '' },
+    { city: '惠州', lat: 23.11, lng: 114.42, date: '', desc: '', photo: '' },
+    { city: '桂林', lat: 25.27, lng: 110.28, date: '', desc: '', photo: '' },
+    { city: '阳朔', lat: 24.78, lng: 110.49, date: '', desc: '', photo: '' },
+    { city: '苏州', lat: 31.30, lng: 120.62, date: '', desc: '', photo: '' },
+    { city: '佛山', lat: 23.02, lng: 113.12, date: '', desc: '', photo: '' },
+  ];
+
+  // Stats
+  var statsEl = document.getElementById('travelStats');
+  var lats = travels.map(function (t) { return t.lat; });
+  var lngs = travels.map(function (t) { return t.lng; });
+  statsEl.textContent = '去过 ' + travels.length + ' 座城市 · 横跨 ' + Math.round(Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) + '° 纬度';
+
+  // Map init
+  var map = L.map('travelMap', { scrollWheelZoom: false }).setView([28.0, 113.5], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>, &copy; CartoDB',
+    maxZoom: 18
+  }).addTo(map);
+
+  // Custom heart icon
+  var heartIcon = L.divIcon({
+    className: 'heart-marker',
+    html: '<div class="heart-marker-inner">❤</div>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -18]
+  });
+
+  // Add markers with popup
+  for (var i = 0; i < travels.length; i++) {
+    (function (t) {
+      var marker = L.marker([t.lat, t.lng], { icon: heartIcon }).addTo(map);
+      var popupContent = '<div class="travel__popup-city">' + t.city + '</div>';
+      if (t.date) popupContent += '<div class="travel__popup-date">' + t.date + '</div>';
+      if (t.desc) popupContent += '<div class="travel__popup-desc">' + t.desc + '</div>';
+      else popupContent += '<div class="travel__popup-desc" style="color:#C4A0A8">回忆即将添加...</div>';
+      marker.bindPopup(popupContent, { closeButton: false, offset: [0, -10] });
+    })(travels[i]);
+  }
+
+  // Draw flight lines
+  var lineCoords = travels.map(function (t) { return [t.lat, t.lng]; });
+  L.polyline(lineCoords, {
+    color: '#E89AAA',
+    weight: 2,
+    opacity: 0.5,
+    dashArray: '6 4',
+    smoothFactor: 1
+  }).addTo(map);
+
+  // Invalidate size on reveal
+  var observer = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) {
+      map.invalidateSize();
+      observer.disconnect();
+    }
+  });
+  observer.observe(mapContainer);
+})();
+
+/* ========================================
    Music Player
    ======================================== */
 (function () {
