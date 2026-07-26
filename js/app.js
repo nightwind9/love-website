@@ -509,59 +509,59 @@ window.addEventListener('beforeunload', function () {
     { city: '佛山', lat: 23.02, lng: 113.12, date: '', desc: '', photo: '' },
   ];
 
-  // Stats
   var statsEl = document.getElementById('travelStats');
   var lats = travels.map(function (t) { return t.lat; });
-  var lngs = travels.map(function (t) { return t.lng; });
   statsEl.textContent = '去过 ' + travels.length + ' 座城市 · 横跨 ' + Math.round(Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) + '° 纬度';
 
-  // Map init
-  var map = L.map('travelMap', { scrollWheelZoom: false }).setView([28.0, 113.5], 6);
+  var initialized = false;
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>, &copy; CartoDB',
-    maxZoom: 18
-  }).addTo(map);
+  function initMap() {
+    if (initialized) return;
+    initialized = true;
 
-  // Custom heart icon
-  var heartIcon = L.divIcon({
-    className: 'heart-marker',
-    html: '<div class="heart-marker-inner">❤</div>',
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-    popupAnchor: [0, -18]
-  });
+    var map = L.map('travelMap', { scrollWheelZoom: false }).setView([28.0, 113.5], 6);
 
-  // Add markers with popup
-  for (var i = 0; i < travels.length; i++) {
-    (function (t) {
-      var marker = L.marker([t.lat, t.lng], { icon: heartIcon }).addTo(map);
-      var popupContent = '<div class="travel__popup-city">' + t.city + '</div>';
-      if (t.date) popupContent += '<div class="travel__popup-date">' + t.date + '</div>';
-      if (t.desc) popupContent += '<div class="travel__popup-desc">' + t.desc + '</div>';
-      else popupContent += '<div class="travel__popup-desc" style="color:#C4A0A8">回忆即将添加...</div>';
-      marker.bindPopup(popupContent, { closeButton: false, offset: [0, -10] });
-    })(travels[i]);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OSM, &copy; CartoDB',
+      maxZoom: 18
+    }).addTo(map);
+
+    var heartIcon = L.divIcon({
+      className: 'heart-marker',
+      html: '<div class="heart-marker-inner">❤</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -18]
+    });
+
+    for (var i = 0; i < travels.length; i++) {
+      (function (t) {
+        var marker = L.marker([t.lat, t.lng], { icon: heartIcon }).addTo(map);
+        var popupContent = '<div class="travel__popup-city">' + t.city + '</div>';
+        if (t.date) popupContent += '<div class="travel__popup-date">' + t.date + '</div>';
+        if (t.desc) popupContent += '<div class="travel__popup-desc">' + t.desc + '</div>';
+        else popupContent += '<div class="travel__popup-desc" style="color:#C4A0A8">回忆即将添加...</div>';
+        marker.bindPopup(popupContent, { closeButton: false, offset: [0, -10] });
+      })(travels[i]);
+    }
+
+    var lineCoords = travels.map(function (t) { return [t.lat, t.lng]; });
+    L.polyline(lineCoords, { color: '#E89AAA', weight: 2, opacity: 0.5, dashArray: '6 4', smoothFactor: 1 }).addTo(map);
+
+    map.invalidateSize();
   }
 
-  // Draw flight lines
-  var lineCoords = travels.map(function (t) { return [t.lat, t.lng]; });
-  L.polyline(lineCoords, {
-    color: '#E89AAA',
-    weight: 2,
-    opacity: 0.5,
-    dashArray: '6 4',
-    smoothFactor: 1
-  }).addTo(map);
-
-  // Invalidate size on reveal
+  // Lazy init: only load when scrolled into view
   var observer = new IntersectionObserver(function (entries) {
     if (entries[0].isIntersecting) {
-      map.invalidateSize();
+      initMap();
       observer.disconnect();
     }
-  });
+  }, { rootMargin: '300px' });
   observer.observe(mapContainer);
+
+  // Fallback: init after 5s if still not scrolled
+  setTimeout(function () { initMap(); }, 8000);
 })();
 
 /* ========================================
