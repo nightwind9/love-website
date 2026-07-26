@@ -1543,9 +1543,100 @@ button {
   .food,
   .letter,
   .flowers,
+  .travel,
   .music {
     padding: 60px 0;
   }
+
+  .travel__map {
+    height: 350px;
+  }
+}
+
+/* ========================================
+   Travel Map
+   ======================================== */
+.travel {
+  padding: 100px 0;
+  background: var(--color-bg);
+}
+
+.travel__stats {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  min-height: 24px;
+}
+
+.travel__map {
+  width: 100%;
+  height: 500px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  z-index: 1;
+}
+
+/* Custom Leaflet marker - heart */
+.leaflet-marker-icon.heart-marker {
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  background: none;
+  border: none;
+}
+
+.heart-marker-inner {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, var(--color-primary), #F0A0B0);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 0 12px rgba(232,154,170,0.5);
+  animation: markerPulse 2s ease-in-out infinite;
+}
+
+@keyframes markerPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(232,154,170,0.4); }
+  50% { box-shadow: 0 0 20px rgba(232,154,170,0.8); }
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 0;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  padding: 14px 16px;
+  font-family: var(--font-default);
+  min-width: 180px;
+}
+
+.travel__popup-city {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primary-deep);
+  margin-bottom: 4px;
+}
+
+.travel__popup-date {
+  font-size: 0.78rem;
+  color: var(--color-text-lighter);
+  margin-bottom: 6px;
+}
+
+.travel__popup-desc {
+  font-size: 0.88rem;
+  color: var(--color-text);
+  line-height: 1.5;
 }
 
 /* ========================================
