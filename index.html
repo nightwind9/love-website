@@ -85,7 +85,10 @@
   <section class="gallery" id="gallery">
     <div class="container">
       <h2 class="section-title">照片回忆墙</h2>
-      <p class="section-desc">每一张照片，都是我们相爱的证据</p>
+      <p class="section-desc">
+        每一张照片，都是我们相爱的证据
+        <button class="game__entry-btn" id="gameEntryBtn">🎮 翻牌挑战</button>
+      </p>
       <div class="gallery__grid" id="galleryGrid">
         <!-- JS 动态生成 -->
       </div>
@@ -211,6 +214,27 @@
       <img class="memory-card__img" id="memoryImg" src="" alt="">
     </div>
   </div>
+
+  <!-- 翻牌记忆游戏 -->
+  <div class="game-overlay" id="gameOverlay">
+    <div class="game" id="game">
+      <button class="game__close" id="gameClose">&times;</button>
+      <h2 class="game__title">🎮 翻牌记忆</h2>
+      <div class="game__score">
+        <span>⏱ <span id="gameTimer">0</span>s</span>
+        <span>👆 <span id="gameSteps">0</span> 步</span>
+        <span>✅ <span id="gameMatch">0</span>/<span id="gameTotal">6</span></span>
+      </div>
+      <div class="game__board" id="gameBoard"></div>
+      <div class="game__actions">
+        <button class="game__btn" id="gameEasy">简单 4×3</button>
+        <button class="game__btn" id="gameHard">困难 4×4</button>
+        <button class="game__btn" id="gameRestart">重新开始</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 照片墙游戏入口按钮 -->
 
   <!-- 隐藏的音频播放器 -->
   <audio id="bgAudio" preload="auto"></audio>
