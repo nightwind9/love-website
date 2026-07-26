@@ -521,8 +521,8 @@ window.addEventListener('beforeunload', function () {
 
     var map = L.map('travelMap', { scrollWheelZoom: false }).setView([28.0, 113.5], 6);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OSM, &copy; CartoDB',
+    L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      subdomains: '1234',
       maxZoom: 18
     }).addTo(map);
 
