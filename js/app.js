@@ -500,6 +500,7 @@ window.addEventListener('beforeunload', function () {
     { city: '深圳', lat: 22.54, lng: 114.06, date: '', desc: '', photo: '' },
     { city: '上海', lat: 31.23, lng: 121.47, date: '', desc: '', photo: '' },
     { city: '景德镇', lat: 29.27, lng: 117.18, date: '', desc: '', photo: '' },
+    { city: '荆州', lat: 30.35, lng: 112.24, date: '', desc: '', photo: '' },
     { city: '香港', lat: 22.32, lng: 114.17, date: '', desc: '', photo: '' },
     { city: '贵州', lat: 26.60, lng: 106.71, date: '', desc: '', photo: '' },
     { city: '惠州', lat: 23.11, lng: 114.42, date: '', desc: '', photo: '' },
