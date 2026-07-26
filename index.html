@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <!-- 全局导航 -->
@@ -23,6 +25,7 @@
       <li><a href="#food" class="nav__link"><span class="nav__link-name">食谱</span></a></li>
       <li><a href="#letter" class="nav__link"><span class="nav__link-name">情书</span></a></li>
       <li><a href="#flowers" class="nav__link"><span class="nav__link-name">花语</span></a></li>
+      <li><a href="#travel" class="nav__link"><span class="nav__link-name">地图</span></a></li>
       <li><a href="#music" class="nav__link"><span class="nav__link-name">音乐</span></a></li>
     </ul>
   </nav>
@@ -145,6 +148,16 @@
       <div class="flowers__grid" id="flowersGrid">
         <!-- JS 动态生成 -->
       </div>
+    </div>
+  </section>
+
+  <!-- ====== 8. 旅行地图 ====== -->
+  <section class="travel" id="travel">
+    <div class="container">
+      <h2 class="section-title">我们的旅行地图</h2>
+      <p class="section-desc">每一座城市，都有我们的足迹</p>
+      <div class="travel__stats" id="travelStats"></div>
+      <div class="travel__map" id="travelMap"></div>
     </div>
   </section>
 
