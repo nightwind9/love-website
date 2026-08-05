@@ -10,6 +10,146 @@ window.addEventListener('beforeunload', function () {
 });
 
 /* ========================================
+   Birthday Gift - Pickup Code Reveal
+   ======================================== */
+(function () {
+  var pickupCode = '62849173';
+  var revealTimes = [19, 20, 21, 22];
+
+  var overlay = document.getElementById('birthdayOverlay');
+  if (!overlay) return;
+
+  function isBirthday() {
+    var now = new Date();
+    return now.getFullYear() === 2026 && now.getMonth() === 7 && now.getDate() === 7;
+  }
+
+  function getRevealedCount() {
+    var now = new Date();
+    if (!isBirthday()) return 0;
+    var hour = now.getHours();
+    var count = 0;
+    for (var i = 0; i < revealTimes.length; i++) {
+      if (hour >= revealTimes[i]) count++;
+    }
+    return Math.min(count * 2, pickupCode.length);
+  }
+
+  function updateDisplay() {
+    if (!isBirthday()) return;
+
+    var revealed = getRevealedCount();
+    var digits = document.querySelectorAll('.birthday__digit');
+    var progress = document.getElementById('birthdayProgressFill');
+    var subtitle = document.getElementById('birthdaySubtitle');
+    var hint = document.getElementById('birthdayHint');
+    var pickup = document.getElementById('birthdayPickup');
+    var gift = document.querySelector('.birthday__gift');
+    var emoji = document.getElementById('birthdayEmoji');
+
+    for (var i = 0; i < digits.length; i++) {
+      digits[i].textContent = i < revealed ? pickupCode[i] : '?';
+      if (i < revealed) digits[i].classList.add('birthday__digit--revealed');
+    }
+
+    var pct = Math.round((revealed / pickupCode.length) * 100);
+    progress.style.width = pct + '%';
+
+    if (revealed === 0) {
+      subtitle.textContent = '惊喜将在今晚 7 点揭晓';
+      hint.textContent = '';
+      pickup.classList.remove('birthday__pickup--active');
+      emoji.textContent = '🎂';
+    } else if (revealed < pickupCode.length) {
+      subtitle.textContent = '🎁 取件码（已揭晓 ' + revealed + '/' + pickupCode.length + '）';
+      var nextHour = revealTimes[Math.floor(revealed / 2)] || 22;
+      hint.textContent = '下一批 ' + nextHour + ':00 揭晓';
+      pickup.classList.remove('birthday__pickup--active');
+      emoji.textContent = '🎁';
+    } else {
+      subtitle.textContent = '🎉 惊喜全部揭晓！';
+      hint.textContent = '';
+      pickup.classList.add('birthday__pickup--active');
+      emoji.textContent = '🎉';
+      startConfetti();
+    }
+
+    overlay.classList.add('birthday-overlay--active');
+  }
+
+  // Confetti
+  function startConfetti() {
+    var canvas = document.getElementById('birthdayCanvas');
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var colors = ['#E89AAA', '#F5C6D0', '#FFD700', '#FFA0B0', '#FFC0D0', '#F0A0B0'];
+
+    for (var i = 0; i < 80; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -Math.random() * canvas.height,
+        size: Math.random() * 6 + 3,
+        speedY: Math.random() * 3 + 1.5,
+        speedX: (Math.random() - 0.5) * 3,
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        shape: Math.random() > 0.5 ? 'rect' : 'circle'
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.y += p.speedY;
+        p.x += p.speedX + Math.sin(p.y * 0.02) * 1.5;
+        p.rotation += p.rotSpeed;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        if (p.shape === 'rect') {
+          ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size/2, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.restore();
+        if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  var shownToday = sessionStorage.getItem('birthdayShown');
+  if (isBirthday() && !shownToday) {
+    updateDisplay();
+  }
+
+  setInterval(function () {
+    if (isBirthday()) updateDisplay();
+  }, 60000);
+
+  document.getElementById('birthdayClose').addEventListener('click', function () {
+    overlay.classList.remove('birthday-overlay--active');
+    sessionStorage.setItem('birthdayShown', '1');
+  });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('birthday-overlay--active');
+      sessionStorage.setItem('birthdayShown', '1');
+    }
+  });
+})();
+
+/* ========================================
    Petal Particle System (Canvas)
    ======================================== */
 (function () {
