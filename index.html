@@ -218,7 +218,32 @@
   <!-- 回到顶部 -->
   <button class="back-to-top" id="backToTop" title="回到顶部">&#8593;</button>
 
-  <!-- 随机回忆卡 -->
+  <!-- 生日倒计时弹窗 -->
+  <div class="birthday-overlay" id="birthdayOverlay">
+    <canvas class="birthday__canvas" id="birthdayCanvas"></canvas>
+    <div class="birthday" id="birthdayCard">
+      <div class="birthday__emoji" id="birthdayEmoji">🎂</div>
+      <h2 class="birthday__title" id="birthdayTitle">生日快乐！</h2>
+      <p class="birthday__subtitle" id="birthdaySubtitle">惊喜将在今晚 7 点揭晓</p>
+      <div class="birthday__gift">🎁</div>
+      <div class="birthday__code" id="birthdayCode">
+        <span class="birthday__digit" data-i="0">?</span>
+        <span class="birthday__digit" data-i="1">?</span>
+        <span class="birthday__digit" data-i="2">?</span>
+        <span class="birthday__digit" data-i="3">?</span>
+        <span class="birthday__digit" data-i="4">?</span>
+        <span class="birthday__digit" data-i="5">?</span>
+        <span class="birthday__digit" data-i="6">?</span>
+        <span class="birthday__digit" data-i="7">?</span>
+      </div>
+      <div class="birthday__progress" id="birthdayProgressBar">
+        <div class="birthday__progress-fill" id="birthdayProgressFill"></div>
+      </div>
+      <p class="birthday__hint" id="birthdayHint">下一批 20:00 揭晓</p>
+      <p class="birthday__pickup" id="birthdayPickup">📦 丰巢快递柜取件 · 快去取你的生日礼物吧！💕</p>
+      <button class="birthday__btn" id="birthdayClose">知道了</button>
+    </div>
+  </div>
   <div class="memory-card" id="memoryCard">
     <button class="memory-card__close" id="memoryClose">&times;</button>
     <div class="memory-card__inner">
