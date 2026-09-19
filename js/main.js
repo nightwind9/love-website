@@ -1,4 +1,4 @@
-/* love-website v20260705 - no background music */
+/* love-website v20260719 - breeze-love-mq - timeline updated */
 /* ========================================
    Prevent browser auto-scroll on refresh
    ======================================== */
@@ -10,6 +10,156 @@ window.addEventListener('beforeunload', function () {
 });
 
 /* ========================================
+   Birthday Gift - Pickup Code Reveal
+   ======================================== */
+(function () {
+  var pickupCode = '42094918';
+  var revealTimes = [19, 20, 21, 22];
+
+  var overlay = document.getElementById('birthdayOverlay');
+  if (!overlay) return;
+
+  function isBirthday() {
+    var now = new Date();
+    return now.getFullYear() === 2026 && now.getMonth() === 7 && now.getDate() === 6;
+  }
+
+  function getRevealedCount() {
+    var now = new Date();
+    if (!isBirthday() && !TEST_MODE) return 0;
+    var hour = now.getHours();
+    var count = 0;
+    for (var i = 0; i < revealTimes.length; i++) {
+      if (hour >= revealTimes[i]) count++;
+    }
+    return Math.min(count * 2, pickupCode.length);
+  }
+
+  function updateDisplay() {
+    if (!isBirthday() && !TEST_MODE) return;
+
+    var now = new Date();
+    var isDayAfter = now.getMonth() === 7 && now.getDate() === 7;
+    var revealed = isDayAfter ? pickupCode.length : getRevealedCount();
+
+    var digits = document.querySelectorAll('.birthday__digit');
+    var progress = document.getElementById('birthdayProgressFill');
+    var subtitle = document.getElementById('birthdaySubtitle');
+    var hint = document.getElementById('birthdayHint');
+    var pickup = document.getElementById('birthdayPickup');
+    var emoji = document.getElementById('birthdayEmoji');
+
+    for (var i = 0; i < digits.length; i++) {
+      digits[i].textContent = i < revealed ? pickupCode[i] : '?';
+      if (i < revealed) digits[i].classList.add('birthday__digit--revealed');
+    }
+
+    var pct = Math.round((revealed / pickupCode.length) * 100);
+    progress.style.width = pct + '%';
+
+    if (revealed === 0) {
+      subtitle.textContent = '惊喜将在今晚 7 点揭晓';
+      hint.textContent = '';
+      pickup.classList.remove('birthday__pickup--active');
+      emoji.textContent = '🎂';
+    } else if (revealed < pickupCode.length) {
+      subtitle.textContent = '🎁 取件码（已揭晓 ' + revealed + '/' + pickupCode.length + '）';
+      var nextHour = revealTimes[Math.floor(revealed / 2)] || 22;
+      hint.textContent = '下一批 ' + nextHour + ':00 揭晓';
+      pickup.classList.remove('birthday__pickup--active');
+      emoji.textContent = '🎁';
+    } else {
+      subtitle.textContent = isDayAfter ? '取件码已就绪，快去取礼物吧！' : '🎉 惊喜全部揭晓！';
+      hint.textContent = '';
+      pickup.classList.add('birthday__pickup--active');
+      emoji.textContent = '🎉';
+      startConfetti();
+    }
+
+    overlay.classList.add('birthday-overlay--active');
+  }
+
+  // Confetti
+  function startConfetti() {
+    var canvas = document.getElementById('birthdayCanvas');
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var colors = ['#E89AAA', '#F5C6D0', '#FFD700', '#FFA0B0', '#FFC0D0', '#F0A0B0'];
+
+    for (var i = 0; i < 80; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -Math.random() * canvas.height,
+        size: Math.random() * 6 + 3,
+        speedY: Math.random() * 3 + 1.5,
+        speedX: (Math.random() - 0.5) * 3,
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        shape: Math.random() > 0.5 ? 'rect' : 'circle'
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.y += p.speedY;
+        p.x += p.speedX + Math.sin(p.y * 0.02) * 1.5;
+        p.rotation += p.rotSpeed;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        if (p.shape === 'rect') {
+          ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size/2, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.restore();
+        if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  function isBirthday() {
+    var now = new Date();
+    var m = now.getMonth(), d = now.getDate();
+    return now.getFullYear() === 2026 && m === 7 && (d === 6 || d === 7);
+  }
+
+  var TEST_MODE = false;
+
+  var shownToday = TEST_MODE ? false : sessionStorage.getItem('birthdayShown');
+  if ((isBirthday() || TEST_MODE) && !shownToday) {
+    updateDisplay();
+  }
+
+  setInterval(function () {
+    if (isBirthday() || TEST_MODE) updateDisplay();
+  }, 60000);
+
+  document.getElementById('birthdayClose').addEventListener('click', function () {
+    overlay.classList.remove('birthday-overlay--active');
+    sessionStorage.setItem('birthdayShown', '1');
+  });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('birthday-overlay--active');
+      sessionStorage.setItem('birthdayShown', '1');
+    }
+  });
+})();
+
+/* ========================================
    Petal Particle System (Canvas)
    ======================================== */
 (function () {
@@ -19,11 +169,11 @@ window.addEventListener('beforeunload', function () {
 
   var petals = [];
   var petalColors = [
-    'rgba(184, 160, 200, 0.7)',
-    'rgba(212, 184, 197, 0.6)',
-    'rgba(184, 160, 200, 0.4)',
-    'rgba(200, 175, 195, 0.5)',
-    'rgba(154, 170, 155, 0.3)'
+    'rgba(232, 154, 170, 0.7)',
+    'rgba(245, 198, 208, 0.6)',
+    'rgba(232, 154, 170, 0.4)',
+    'rgba(210, 170, 180, 0.5)',
+    'rgba(181, 200, 176, 0.3)'
   ];
 
   function resize() {
@@ -66,7 +216,7 @@ window.addEventListener('beforeunload', function () {
     ctx.restore();
   };
 
-  var maxPetals = 50;
+  var maxPetals = 30;
   function initPetals() {
     for (var i = 0; i < maxPetals; i++) {
       var p = new Petal();
@@ -120,6 +270,99 @@ window.addEventListener('beforeunload', function () {
     since.textContent = '从 ' + y + '年' + m + '月' + d + '日 开始';
   }
 
+  var specialDays = [100, 200, 300, 365, 400, 500, 520, 600, 666, 700, 800, 900, 999, 1000, 1111, 1314];
+  var lastShown = -1;
+
+  function checkEasterEgg(diff) {
+    for (var i = 0; i < specialDays.length; i++) {
+      if (diff === specialDays[i] && diff !== lastShown) {
+        lastShown = diff;
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#E89AAA,#F5C6D0);color:#fff;padding:14px 28px;border-radius:24px;font-size:1.1rem;font-weight:700;z-index:999;box-shadow:0 4px 20px rgba(232,154,170,0.4);animation:fadeInUp 0.6s ease;text-align:center;';
+        toast.textContent = '✨ 我们已经在一起 ' + diff + ' 天啦！💕';
+        document.body.appendChild(toast);
+        setTimeout(function () { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.6s'; setTimeout(function () { toast.remove(); }, 600); }, 3500);
+        break;
+      }
+    }
+  }
+
+  var origUpdate = updateTimer;
+  updateTimer = function () {
+    origUpdate();
+    var start = new Date(anniversaryDate + 'T00:00:00');
+    var diff = Math.floor((new Date() - start) / (1000 * 60 * 60 * 24));
+    checkEasterEgg(diff);
+  };
+
+})();
+
+/* ========================================
+   Vacation Countdown
+   ======================================== */
+(function () {
+  var grid = document.getElementById('vacationGrid');
+  if (!grid) return;
+
+  var events = [
+    { name: '中秋团圆', date: '2026-09-25', icon: '🌕', desc: '一起吃月饼' },
+    { name: '国庆小长假', date: '2026-10-01', icon: '🇨🇳', desc: '七天假期' },
+    { name: '元旦跨年', date: '2027-01-01', icon: '🎆', desc: '一起倒数' },
+    { name: '春节过年', date: '2027-01-29', icon: '🧧', desc: '回家团圆' },
+    { name: '纪念日旅行', date: '2026-11-02', icon: '✈️', desc: '两周年纪念' },
+  ];
+
+  function formatDate(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+
+  function calcDays(targetDate) {
+    var now = new Date();
+    var target = new Date(targetDate + 'T00:00:00');
+    return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  }
+
+  var cards = [];
+  for (var i = 0; i < events.length; i++) {
+    var card = document.createElement('div');
+    card.className = 'vacation__card reveal';
+
+    card.innerHTML =
+      '<span class="vacation__card-icon">' + events[i].icon + '</span>' +
+      '<div class="vacation__card-name">' + events[i].name + '</div>' +
+      '<div class="vacation__card-date">' + formatDate(events[i].date) + ' · ' + events[i].desc + '</div>' +
+      '<div class="vacation__card-countdown">' +
+        '<span class="vacation__card-number" data-date="' + events[i].date + '">--</span>' +
+        '<span class="vacation__card-unit">天</span>' +
+      '</div>';
+
+    grid.appendChild(card);
+    cards.push(card);
+  }
+
+  function updateAll() {
+    for (var i = 0; i < events.length; i++) {
+      var numberEl = cards[i].querySelector('.vacation__card-number');
+      var days = calcDays(events[i].date);
+
+      if (days < 0) {
+        cards[i].classList.add('vacation__card--passed');
+        numberEl.textContent = '已过';
+      } else if (days === 0) {
+        cards[i].classList.add('vacation__card--soon');
+        numberEl.textContent = '今天';
+      } else {
+        numberEl.textContent = days;
+        if (days <= 30) {
+          cards[i].classList.add('vacation__card--soon');
+        }
+      }
+    }
+  }
+
+  updateAll();
+  setInterval(updateAll, 60000);
 })();
 
 /* ========================================
@@ -128,36 +371,49 @@ window.addEventListener('beforeunload', function () {
 (function () {
   var grid = document.getElementById('galleryGrid');
   var photos = [
-    { src: '', alt: '我们的第一张合照' },
-    { src: '', alt: '一起看日落' },
-    { src: '', alt: '你的生日' },
-    { src: '', alt: '海边旅行' },
-    { src: '', alt: '一起做饭' },
-    { src: '', alt: '雨天散步' },
-    { src: '', alt: '跨年烟火' },
-    { src: '', alt: '我们的日常' },
-  ];
-
-  var placeholderColors = [
-    ['#E8DFEB', '#D4C8D8'],
-    ['#EDE4F0', '#D8CCE0'],
-    ['#F0E4ED', '#DCC8D8'],
-    ['#E5DEE8', '#D5C8D5'],
-    ['#EBE0EA', '#D8C8D5'],
-    ['#E8DFEB', '#D4C8D8'],
-    ['#EDE4F0', '#D8CCE0'],
-    ['#F0E4ED', '#DCC8D8'],
+    { src: 'assets/images/gallery/IMG_20241215_132440.jpg', alt: '我们的合照 1' },
+    { src: 'assets/images/gallery/IMG_20250105_122448.jpg', alt: '我们的合照 2' },
+    { src: 'assets/images/gallery/MTXX_IMG_20250105_19321632.jpg', alt: '我们的合照 3' },
+    { src: 'assets/images/gallery/image_1739691710644.jpg', alt: '我们的合照 4' },
+    { src: 'assets/images/gallery/MTXX_IMG_20250502_12222379.jpg', alt: '我们的合照 5' },
+    { src: 'assets/images/gallery/IMG_20250809_185420.jpg', alt: '我们的合照 6' },
+    { src: 'assets/images/gallery/IMG_20250810_092943.jpg', alt: '我们的合照 7' },
+    { src: 'assets/images/gallery/IMG_20250810_125917.jpg', alt: '我们的合照 8' },
+    { src: 'assets/images/gallery/MTXX_IMG_20250810_10381285.jpg', alt: '我们的合照 9' },
+    { src: 'assets/images/gallery/IMG_20250821_145909.jpg', alt: '我们的合照 10' },
+    { src: 'assets/images/gallery/IMG_20260102_191916.jpg', alt: '我们的合照 11' },
+    { src: 'assets/images/gallery/IMG_20260208_112813.jpg', alt: '我们的合照 12' },
+    { src: 'assets/images/gallery/IMG_20260208_120436.jpg', alt: '我们的合照 13' },
+    { src: 'assets/images/gallery/MTXX_IMG_20260621_19131028.jpg', alt: '我们的合照 14' },
+    { src: 'assets/images/gallery/IMG_20260624_082440.jpg', alt: '我们的合照 15' },
+    { src: 'assets/images/gallery/image_1775474571851.jpg', alt: '我们的合照 16' },
+    { src: 'assets/images/gallery/HCH00408(1).jpg', alt: '我们的合照 17' },
+    { src: 'assets/images/gallery/HCH00456(1).jpg', alt: '我们的合照 18' },
+    { src: 'assets/images/gallery/微信图片_20260705113500_3673_1.jpg', alt: '我们的合照 19' },
+    { src: 'assets/images/gallery/微信图片_20260705113500_3674_1.jpg', alt: '我们的合照 20' },
+    { src: 'assets/images/gallery/微信图片_20260705215853_3705_1.jpg', alt: '我们的合照 21' },
+    { src: 'assets/images/gallery/微信图片_20260705215858_3706_1.jpg', alt: '我们的合照 22' },
+    { src: 'assets/images/gallery/微信图片_20260705215926_3707_1.jpg', alt: '我们的合照 23' },
   ];
 
   for (var i = 0; i < photos.length; i++) {
     var item = document.createElement('div');
     item.className = 'gallery__item';
-    var gradient = 'linear-gradient(135deg, ' + placeholderColors[i][0] + ', ' + placeholderColors[i][1] + ')';
-    item.innerHTML =
-      '<div class="gallery__item-img gallery__item-img--placeholder" style="background:' + gradient + '">' +
-        '<span class="gallery__item-placeholder-icon">&#10087;</span>' +
-      '</div>' +
-      '<div class="gallery__item-overlay">' + photos[i].alt + '</div>';
+
+    var img = document.createElement('img');
+    img.className = 'gallery__item-real';
+    img.src = photos[i].src;
+    img.setAttribute('srcset', photos[i].src.replace('gallery/', 'gallery-sm/') + ' 400w, ' + photos[i].src + ' 800w');
+    img.setAttribute('sizes', '(max-width: 768px) 50vw, 25vw');
+    img.alt = photos[i].alt;
+    img.loading = 'lazy';
+
+    var overlay = document.createElement('div');
+    overlay.className = 'gallery__item-overlay';
+    overlay.textContent = photos[i].alt;
+
+    item.appendChild(img);
+    item.appendChild(overlay);
     item.addEventListener('click', (function (idx) {
       return function () { openLightbox(idx); };
     })(i));
@@ -171,22 +427,21 @@ window.addEventListener('beforeunload', function () {
 
   function openLightbox(index) {
     currentIndex = index;
-    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
-    lightboxImg.style.display = 'none';
-    lightboxImg.style.background = gradient;
-    lightboxImg.style.minWidth = '300px';
-    lightboxImg.style.minHeight = '200px';
+    lightboxImg.removeAttribute('src');
+    lightboxImg.style.background = 'none';
     lightboxCaption.textContent = photos[index].alt;
+    if (photos[index].src) {
+      var testImg = new Image();
+      testImg.onload = function () {
+        if (currentIndex === index) {
+          lightboxImg.src = photos[index].src;
+          lightboxImg.style.display = '';
+        }
+      };
+      testImg.src = photos[index].src;
+    }
     lightbox.classList.add('lightbox--active');
     document.body.style.overflow = 'hidden';
-  }
-
-  function showPlaceholder(index) {
-    var gradient = 'linear-gradient(135deg, ' + placeholderColors[index][0] + ', ' + placeholderColors[index][1] + ')';
-    lightboxImg.style.display = 'none';
-    lightboxImg.style.background = gradient;
-    lightboxImg.style.minWidth = '300px';
-    lightboxImg.style.minHeight = '200px';
   }
 
   function closeLightbox() {
@@ -199,16 +454,19 @@ window.addEventListener('beforeunload', function () {
     if (e.target === lightbox) closeLightbox();
   });
 
+  function showPlaceholder(index) {
+    lightboxImg.src = photos[index].src;
+    lightboxCaption.textContent = photos[index].alt;
+  }
+
   document.getElementById('lightboxPrev').addEventListener('click', function () {
     currentIndex = (currentIndex - 1 + photos.length) % photos.length;
     showPlaceholder(currentIndex);
-    lightboxCaption.textContent = photos[currentIndex].alt;
   });
 
   document.getElementById('lightboxNext').addEventListener('click', function () {
     currentIndex = (currentIndex + 1) % photos.length;
     showPlaceholder(currentIndex);
-    lightboxCaption.textContent = photos[currentIndex].alt;
   });
 
   document.addEventListener('keydown', function (e) {
@@ -235,11 +493,8 @@ window.addEventListener('beforeunload', function () {
 (function () {
   var timelineList = document.getElementById('timelineList');
   var events = [
-    { date: '2023年12月15日', title: '第一次相遇', desc: '在朋友聚会上第一次见到你，你的笑容让我再也忘不掉。' },
-    { date: '2024年11月2日', title: '我们在一起了', desc: '和你在一起的每一天，都成了我人生最宝贵的记忆。' },
-    { date: '2025年3月14日', title: '第一次旅行', desc: '白色情人节，我们去了海边。海风很大，但牵着你的手就不觉得冷。' },
-    { date: '2025年6月20日', title: '你的生日', desc: '给你准备了惊喜派对，看到你开心的样子，觉得一切都值得。' },
-    { date: '2025年10月1日', title: '一起养了猫', desc: '我们的第一只猫咪——小团子，让我们的家更加完整。' },
+    { date: '2024年8月5日', title: '第一次相遇', desc: '华为NEO入职培训，前一天晚上你来我们小组找人，培训聊天才发现是老乡——老乡见老乡，两眼泪汪汪。' },
+    { date: '2024年11月2日', title: '我们在一起了', desc: '凌晨两点你带着空运的鲜花来见我，连那晚的烧烤都带了些许风沙。' },
     { date: '2025年11月2日', title: '一周年纪念', desc: '一年了，每一天都很幸福。和你在一起的时光总是过得太快。' },
   ];
 
@@ -262,48 +517,52 @@ window.addEventListener('beforeunload', function () {
 (function () {
   var foodGrid = document.getElementById('foodGrid');
   var foods = [
-    {
-      name: '街头小笼包',
-      place: '上海 · 老弄堂',
-      desc: '你第一次带我去吃的小笼包，汤汁很烫但好吃到停不下来。',
-      color: '#E8DFEB'
-    },
-    {
-      name: '深夜烧烤摊',
-      place: '家门口 · 路边摊',
-      desc: '每次加班晚了你都会等我一起吃夜宵，烤鸡翅永远是必点。',
-      color: '#F0E4ED'
-    },
-    {
-      name: '日料定食',
-      place: '人均300+ · 纪念日餐厅',
-      desc: '一周年纪念那天去的，你说三文鱼刺身好吃到眯眼睛的样子太可爱了。',
-      color: '#E5DEE8'
-    },
-    {
-      name: '手作甜点',
-      place: '家里 · 你的厨房',
-      desc: '你第一次给我做蛋糕，虽然形状不太完美，但我觉得比任何蛋糕店都好吃。',
-      color: '#EDE4F0'
-    },
+    { name: '第一次给你做饭', place: '家里 · 崴脚后的厨房', desc: '你崴脚后我给你做的第一顿饭。你坐着整理蔬菜，我在旁边切菜做饭，有说有笑，还教你颠勺。', photo: 'assets/images/food/img-17318372933971731837122934_by_crop.jpg' },
+    { name: '曼塔玫瑰·螃蟹·牛肉', place: '2025年6月', desc: '我们一起买的曼塔玫瑰，老板说我眼光好，除了花还有人～然后给你蒸了螃蟹，做了爆炒牛肉，虽然有点咸，毕竟我们盐值太高。', photo: 'assets/images/food/IMG_20250607_135722.jpg' },
+    { name: '热干面+拿铁', place: '中西结合小厨房', desc: '给你做心心念念的热干面，你给我泡了拿铁，中西结合，天下无敌。', photo: 'assets/images/food/IMG_20250608_112540.jpg' },
+    { name: '我们一起做的小饼干', place: '烘焙教室', desc: '一起去做小饼干，和其他小朋友一起学习。你有技术我有创意，你做的全进肚子了，我不舍得，留作纪念。', photo: 'assets/images/food/IMG_20260102_211433.jpg' },
+    { name: '中西结合套餐', place: '温馨早餐时光', desc: '拿铁配玉米，加两个水煮蛋，以后都考满分。', photo: 'assets/images/food/微信图片_20260705115234_3676_1.jpg' },
+    { name: '自制牛排套餐', place: '中午的漂亮饭', desc: '自制牛排套餐，摆盘即刻开店。你的是笑脸，我的是黑脸，可能到了夏天就会是这样的结果。', photo: 'assets/images/food/微信图片_20260705115235_3677_1.jpg' },
+    { name: '一周年·21cake', place: '我们的一周年', desc: '一起买的21cake，一百岁是我们的愿望，所以争取吃一百个蛋糕，就在这一生。', photo: 'assets/images/food/微信图片_20260705115537_3678_1.jpg' },
+  ];
+
+  var foodPlaceholderColors = [
+    '#FCE4EC', '#FDE8EE', '#FEEBF0', '#FBE0E8', '#FDE8EE', '#FCE4EC', '#FEEBF0'
   ];
 
   for (var i = 0; i < foods.length; i++) {
     var card = document.createElement('div');
     card.className = 'food__card reveal';
-    var gradient = 'linear-gradient(135deg, ' + foods[i].color + ', rgba(184, 160, 200, 0.2))';
+    var gradient = 'linear-gradient(135deg, ' + foodPlaceholderColors[i % foodPlaceholderColors.length] + ', rgba(232, 154, 170, 0.2))';
 
-    card.innerHTML =
-      '<div class="food__card-img food__card-img--placeholder" style="background:' + gradient + '">' +
-        '<span class="food__card-placeholder-icon">&#127860;</span>' +
-      '</div>' +
-      '<div class="food__card-body">' +
-        '<h3 class="food__card-title">' + foods[i].name + '</h3>' +
-        '<div class="food__card-meta">' +
-          '<span>' + foods[i].place + '</span>' +
-        '</div>' +
-        '<p class="food__card-desc">' + foods[i].desc + '</p>' +
-      '</div>';
+    var imgWrapper = document.createElement('div');
+    imgWrapper.className = 'food__card-img food__card-img--placeholder';
+    imgWrapper.style.background = gradient;
+
+    var icon = document.createElement('span');
+    icon.className = 'food__card-placeholder-icon';
+    icon.innerHTML = '&#127860;';
+
+    var img = document.createElement('img');
+    img.className = 'food__card-real';
+    img.src = foods[i].photo;
+    img.setAttribute('srcset', foods[i].photo.replace('/food/', '/food-sm/') + ' 400w, ' + foods[i].photo + ' 800w');
+    img.setAttribute('sizes', '(max-width: 768px) 100vw, 33vw');
+    img.alt = foods[i].name;
+    img.loading = 'lazy';
+
+    imgWrapper.appendChild(icon);
+    imgWrapper.appendChild(img);
+
+    var body = document.createElement('div');
+    body.className = 'food__card-body';
+    body.innerHTML =
+      '<h3 class="food__card-title">' + foods[i].name + '</h3>' +
+      '<div class="food__card-meta"><span>' + foods[i].place + '</span></div>' +
+      '<p class="food__card-desc">' + foods[i].desc + '</p>';
+
+    card.appendChild(imgWrapper);
+    card.appendChild(body);
     foodGrid.appendChild(card);
   }
 })();
@@ -344,6 +603,151 @@ window.addEventListener('beforeunload', function () {
 })();
 
 /* ========================================
+   Flowers Section
+   ======================================== */
+(function () {
+  var grid = document.getElementById('flowersGrid');
+  if (!grid) return;
+
+  var flowers = [
+    { src: 'assets/images/flowers/IMG_20241117_180432.jpg', alt: '玫瑰', desc: '你说这是你最爱的花，从此我也爱上了' },
+    { src: 'assets/images/flowers/IMG_20250316_155818.jpg', alt: '花束', desc: '那天你捧着一束花朝我走来，世界都亮了' },
+    { src: 'assets/images/flowers/IMG_20260116_234843.jpg', alt: '鲜花', desc: '花会凋谢，但我们的爱不会' },
+  ];
+
+  for (var i = 0; i < flowers.length; i++) {
+    var card = document.createElement('div');
+    card.className = 'flowers__card reveal';
+
+    var img = document.createElement('img');
+    img.className = 'flowers__card-img';
+    img.src = flowers[i].src;
+    img.setAttribute('srcset', flowers[i].src.replace('/flowers/', '/flowers-sm/') + ' 400w, ' + flowers[i].src + ' 800w');
+    img.setAttribute('sizes', '(max-width: 768px) 100vw, 33vw');
+    img.alt = flowers[i].alt;
+    img.loading = 'lazy';
+
+    var overlay = document.createElement('div');
+    overlay.className = 'flowers__card-caption';
+    overlay.textContent = flowers[i].desc;
+
+    card.appendChild(img);
+    card.appendChild(overlay);
+    grid.appendChild(card);
+  }
+})();
+
+/* ========================================
+   Travel Map
+   ======================================== */
+(function () {
+  var mapContainer = document.getElementById('travelMap');
+  if (!mapContainer) return;
+
+  var travels = [
+    { city: '东莞松山湖', lat: 22.90, lng: 113.88, date: '', desc: '', photo: '' },
+    { city: '深圳', lat: 22.54, lng: 114.06, date: '', desc: '', photo: '' },
+    { city: '上海', lat: 31.23, lng: 121.47, date: '', desc: '', photo: '' },
+    { city: '景德镇', lat: 29.27, lng: 117.18, date: '', desc: '', photo: '' },
+    { city: '荆州', lat: 30.35, lng: 112.24, date: '', desc: '', photo: '' },
+    { city: '香港', lat: 22.32, lng: 114.17, date: '', desc: '', photo: '' },
+    { city: '贵州', lat: 26.60, lng: 106.71, date: '', desc: '', photo: '' },
+    { city: '惠州', lat: 23.11, lng: 114.42, date: '', desc: '', photo: '' },
+    { city: '桂林', lat: 25.27, lng: 110.28, date: '', desc: '', photo: '' },
+    { city: '阳朔', lat: 24.78, lng: 110.49, date: '', desc: '', photo: '' },
+    { city: '苏州', lat: 31.30, lng: 120.62, date: '', desc: '', photo: '' },
+    { city: '佛山', lat: 23.02, lng: 113.12, date: '', desc: '', photo: '' },
+  ];
+
+  var statsEl = document.getElementById('travelStats');
+  var lats = travels.map(function (t) { return t.lat; });
+  statsEl.textContent = '去过 ' + travels.length + ' 座城市 · 横跨 ' + Math.round(Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) + '° 纬度';
+
+  var initialized = false;
+
+  function wgs84ToGcj02(lng, lat) {
+    var a = 6378245.0;
+    var ee = 0.00669342162296594323;
+    if (lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271) return [lng, lat];
+    function transformLat(x, y) {
+      var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+      ret += (20.0 * Math.sin(6.0 * x * Math.PI) + 20.0 * Math.sin(2.0 * x * Math.PI)) * 2.0 / 3.0;
+      ret += (20.0 * Math.sin(y * Math.PI) + 40.0 * Math.sin(y / 3.0 * Math.PI)) * 2.0 / 3.0;
+      ret += (160.0 * Math.sin(y / 12.0 * Math.PI) + 320.0 * Math.sin(y * Math.PI / 30.0)) * 2.0 / 3.0;
+      return ret;
+    }
+    function transformLng(x, y) {
+      var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+      ret += (20.0 * Math.sin(6.0 * x * Math.PI) + 20.0 * Math.sin(2.0 * x * Math.PI)) * 2.0 / 3.0;
+      ret += (20.0 * Math.sin(x * Math.PI) + 40.0 * Math.sin(x / 3.0 * Math.PI)) * 2.0 / 3.0;
+      ret += (150.0 * Math.sin(x / 12.0 * Math.PI) + 300.0 * Math.sin(x / 30.0 * Math.PI)) * 2.0 / 3.0;
+      return ret;
+    }
+    var dLat = transformLat(lng - 105.0, lat - 35.0);
+    var dLng = transformLng(lng - 105.0, lat - 35.0);
+    var radLat = lat / 180.0 * Math.PI;
+    var magic = Math.sin(radLat);
+    magic = 1 - ee * magic * magic;
+    var sqrtMagic = Math.sqrt(magic);
+    dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * Math.PI);
+    dLng = (dLng * 180.0) / (a / sqrtMagic * Math.cos(radLat) * Math.PI);
+    return [lat + dLat, lng + dLng];
+  }
+
+  function initMap() {
+    if (initialized) return;
+    initialized = true;
+
+    var map = L.map('travelMap', { scrollWheelZoom: false }).setView([34.5, 106.5], 5);
+
+    L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      subdomains: ['1', '2', '3', '4'],
+      attribution: '&copy; 高德地图',
+      maxZoom: 18
+    }).addTo(map);
+
+    var heartIcon = L.divIcon({
+      className: 'heart-marker',
+      html: '<div class="heart-marker-inner">❤</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -18]
+    });
+
+    for (var i = 0; i < travels.length; i++) {
+      (function (t) {
+        var pos = wgs84ToGcj02(t.lng, t.lat);
+        var marker = L.marker(pos, { icon: heartIcon }).addTo(map);
+        var popupContent = '<div class="travel__popup-city">' + t.city + '</div>';
+        if (t.date) popupContent += '<div class="travel__popup-date">' + t.date + '</div>';
+        if (t.desc) popupContent += '<div class="travel__popup-desc">' + t.desc + '</div>';
+        else popupContent += '<div class="travel__popup-desc" style="color:#C4A0A8">回忆即将添加...</div>';
+        marker.bindPopup(popupContent, { closeButton: false, offset: [0, -10] });
+      })(travels[i]);
+    }
+
+    var lineCoords = travels.map(function (t) { return wgs84ToGcj02(t.lng, t.lat); });
+    L.polyline(lineCoords, { color: '#E89AAA', weight: 2, opacity: 0.5, dashArray: '6 4', smoothFactor: 1 }).addTo(map);
+
+    map.fitBounds(lineCoords, { padding: [40, 40] });
+
+    map.invalidateSize();
+  }
+
+  // Lazy init: only load when scrolled into view
+  var observer = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) {
+      initMap();
+      observer.disconnect();
+    }
+  }, { rootMargin: '300px' });
+  observer.observe(mapContainer);
+
+  // Fallback: init after 5s if still not scrolled
+  setTimeout(function () { initMap(); }, 8000);
+})();
+
+/* ========================================
    Music Player
    ======================================== */
 (function () {
@@ -353,17 +757,17 @@ window.addEventListener('beforeunload', function () {
 
   // Song playlist (replace with your own audio files)
   var songs = [
-    { title: '星晴', artist: '周杰伦', file: 'assets/audio/星晴.mp3' },
-    { title: '明天过后', artist: '', file: 'assets/audio/明天过后.m4a' },
-    { title: '蝴蝶 love u~', artist: '', file: 'assets/audio/蝴蝶_love u~.m4a' },
-    { title: '梦祺起床啦', artist: '', file: 'assets/audio/梦祺起床啦.mp3' },
+    { title: '星晴', artist: '继伟', file: 'assets/audio/星晴.mp3' },
+    { title: '明天过后', artist: '继伟', file: 'assets/audio/明天过后.m4a' },
+    { title: '蝴蝶 love u~', artist: '继伟', file: 'assets/audio/蝴蝶_love u~.m4a' },
+    { title: '梦祺起床啦', artist: '继伟', file: 'assets/audio/梦祺起床啦.mp3' },
   ];
 
   // Voice recordings
   var recordings = [
-    { name: '梦祺起床啦.mp3', date: '录制时间', file: 'assets/audio/梦祺起床啦.mp3' },
-    { name: '明天过后.m4a', date: '录制时间', file: 'assets/audio/明天过后.m4a' },
-    { name: '蝴蝶 love u~.m4a', date: '录制时间', file: 'assets/audio/蝴蝶_love u~.m4a' },
+    { name: '梦祺起床啦', date: '继伟', file: 'assets/audio/梦祺起床啦.mp3' },
+    { name: '明天过后', date: '继伟', file: 'assets/audio/明天过后.m4a' },
+    { name: '蝴蝶 love u~', date: '继伟', file: 'assets/audio/蝴蝶_love u~.m4a' },
   ];
 
   var currentTrack = -1;
@@ -383,11 +787,36 @@ window.addEventListener('beforeunload', function () {
       track.addEventListener('click', function () {
         playTrack(idx);
         if (songs[idx].file) {
+          var playBtn = document.getElementById('musicPlay');
+          var disc = document.getElementById('musicDisc');
+          playBtn.innerHTML = '⏳';
+          disc.classList.add('music__disc--playing');
           audio.src = songs[idx].file;
-          audio.play();
-          isPlaying = true;
-          updatePlayBtn();
-          updateDisc();
+          audio.load();
+
+          var onProgress = function () {
+            if (audio.buffered.length > 0) {
+              var pct = Math.round((audio.buffered.end(audio.buffered.length - 1) / audio.duration) * 100);
+              if (pct > 0 && pct < 100) playBtn.innerHTML = pct + '%';
+            }
+          };
+          audio.addEventListener('progress', onProgress);
+
+          audio.addEventListener('canplay', function whenReady() {
+            audio.removeEventListener('canplay', whenReady);
+            audio.removeEventListener('progress', onProgress);
+            audio.play();
+            isPlaying = true;
+            updatePlayBtn();
+            updateDisc();
+          }, { once: true });
+
+          audio.addEventListener('error', function onErr() {
+            audio.removeEventListener('error', onErr);
+            audio.removeEventListener('progress', onProgress);
+            playBtn.innerHTML = '⚠';
+            playTrack(-1);
+          }, { once: true });
         }
       });
       playlist.appendChild(track);
@@ -402,7 +831,7 @@ window.addEventListener('beforeunload', function () {
       rec.innerHTML =
         '<div class="music__recording-icon">🎙️</div>' +
         '<div class="music__recording-info">' +
-          '<div class="music__recording-name">' + recordings[idx].name + '</div>' +
+          '<div class="music__recording-name">' + recordings[idx].name.replace(/\.\w+$/, '') + '</div>' +
           '<div class="music__recording-date">' + recordings[idx].date + '</div>' +
         '</div>' +
         '<button class="music__recording-play" title="播放">▶</button>';
@@ -414,13 +843,24 @@ window.addEventListener('beforeunload', function () {
             audio.pause();
             isPlaying = false;
             playBtn.textContent = '▶';
+            playTrack(-1);
             updateDisc();
           } else {
+            playTrack(-1);
+            document.getElementById('musicTitle').textContent = recordings[idx].name.replace(/\.\w+$/, '');
+            document.getElementById('musicArtist').textContent = recordings[idx].date;
+            var pBtn = document.getElementById('musicPlay');
+            pBtn.innerHTML = '⏳';
             audio.src = recordings[idx].file;
-            audio.play();
-            isPlaying = true;
-            playBtn.textContent = '⏸';
-            updateDisc();
+            audio.load();
+            audio.addEventListener('canplay', function whenReady() {
+              audio.removeEventListener('canplay', whenReady);
+              audio.play();
+              isPlaying = true;
+              pBtn.innerHTML = '⏸';
+              playBtn.textContent = '⏸';
+              document.getElementById('musicDisc').classList.add('music__disc--playing');
+            }, { once: true });
           }
         }
       });
@@ -481,11 +921,27 @@ window.addEventListener('beforeunload', function () {
 
   function switchAndPlay(idx) {
     if (songs[idx].file) {
+      var playBtn = document.getElementById('musicPlay');
+      playBtn.innerHTML = '⏳';
       audio.src = songs[idx].file;
-      audio.play();
-      isPlaying = true;
-      updatePlayBtn();
-      updateDisc();
+      audio.load();
+
+      var onProgress = function () {
+        if (audio.buffered.length > 0) {
+          var pct = Math.round((audio.buffered.end(audio.buffered.length - 1) / audio.duration) * 100);
+          if (pct > 0 && pct < 100) playBtn.innerHTML = pct + '%';
+        }
+      };
+      audio.addEventListener('progress', onProgress);
+
+      audio.addEventListener('canplay', function whenReady() {
+        audio.removeEventListener('canplay', whenReady);
+        audio.removeEventListener('progress', onProgress);
+        audio.play();
+        isPlaying = true;
+        updatePlayBtn();
+        updateDisc();
+      }, { once: true });
     }
   }
 
@@ -539,6 +995,198 @@ window.addEventListener('beforeunload', function () {
     playTrack(next);
     switchAndPlay(next);
   });
+
+})();
+
+/* ========================================
+   Random Memory Card
+   ======================================== */
+(function () {
+  var card = document.getElementById('memoryCard');
+  var text = document.getElementById('memoryText');
+  var img = document.getElementById('memoryImg');
+  var close = document.getElementById('memoryClose');
+  var shown = sessionStorage.getItem('memoryCardShown');
+
+  if (shown) return;
+
+  var memories = [];
+  var letters = document.querySelectorAll('.letter__envelope-back p');
+  for (var i = 0; i < letters.length; i++) {
+    if (letters[i].textContent) memories.push({ type: 'text', content: letters[i].textContent });
+  }
+  var galleryItems = document.querySelectorAll('.gallery__item-real');
+  if (galleryItems.length > 0) {
+    memories.push({ type: 'photo', content: '每一张照片都是我们最珍贵的回忆', img: galleryItems[Math.floor(Math.random() * galleryItems.length)].src });
+  }
+  memories.push({ type: 'text', content: '和你在一起的每一天，都是最特别的日子 ❤️' });
+
+  var pick = memories[Math.floor(Math.random() * memories.length)];
+
+  setTimeout(function () {
+    text.textContent = pick.content;
+    if (pick.img) img.src = pick.img;
+    else img.style.display = 'none';
+    card.classList.add('memory-card--active');
+    sessionStorage.setItem('memoryCardShown', '1');
+  }, 5000);
+
+  close.addEventListener('click', function () {
+    card.classList.remove('memory-card--active');
+  });
+})();
+
+/* ========================================
+   Memory Card Game
+   ======================================== */
+(function () {
+  var overlay = document.getElementById('gameOverlay');
+  var board = document.getElementById('gameBoard');
+  var timerEl = document.getElementById('gameTimer');
+  var stepsEl = document.getElementById('gameSteps');
+  var matchEl = document.getElementById('gameMatch');
+  var totalEl = document.getElementById('gameTotal');
+  var winEl = document.getElementById('gameWin') || document.createElement('div');
+
+  var cards = [];
+  var flipped = [];
+  var matched = 0;
+  var totalPairs = 6;
+  var steps = 0;
+  var timer = 0;
+  var timerInterval = null;
+  var locked = false;
+
+  function getPhotos() {
+    var imgs = document.querySelectorAll('.gallery__item-real');
+    var srcs = [];
+    for (var i = 0; i < Math.min(imgs.length, 12); i++) {
+      if (imgs[i].src) srcs.push(imgs[i].src);
+    }
+    while (srcs.length < totalPairs) srcs.push(srcs[0] || '');
+    return srcs.slice(0, totalPairs);
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function startGame(pairs) {
+    totalPairs = pairs;
+    matched = 0;
+    steps = 0;
+    flipped = [];
+    locked = false;
+    timer = 0;
+    if (timerInterval) clearInterval(timerInterval);
+
+    timerEl.textContent = '0';
+    stepsEl.textContent = '0';
+    matchEl.textContent = '0';
+    totalEl.textContent = totalPairs;
+    board.style.gridTemplateColumns = pairs === 6 ? 'repeat(4, 1fr)' : 'repeat(4, 1fr)';
+
+    var photos = getPhotos();
+    var deck = [];
+    for (var p = 0; p < totalPairs; p++) {
+      deck.push(photos[p]); deck.push(photos[p]);
+    }
+    deck = shuffle(deck);
+
+    board.innerHTML = '';
+    cards = [];
+    for (var d = 0; d < deck.length; d++) {
+      var card = document.createElement('div');
+      card.className = 'game__card';
+      card.setAttribute('data-index', d);
+      card.setAttribute('data-value', deck[d]);
+      card.innerHTML =
+        '<div class="game__card-inner">' +
+          '<div class="game__card-front">❤</div>' +
+          '<div class="game__card-back"><img src="' + deck[d] + '" alt=""></div>' +
+        '</div>';
+      card.addEventListener('click', function () { flipCard(this); });
+      board.appendChild(card);
+      cards.push(card);
+    }
+
+    timerInterval = setInterval(function () {
+      timer++;
+      timerEl.textContent = timer;
+    }, 1000);
+  }
+
+  function flipCard(card) {
+    if (locked) return;
+    var idx = parseInt(card.getAttribute('data-index'));
+    if (flipped.indexOf(idx) >= 0 || card.classList.contains('game__card--matched')) return;
+
+    card.classList.add('game__card--flipped');
+    flipped.push(idx);
+
+    if (flipped.length === 2) {
+      steps++;
+      stepsEl.textContent = steps;
+      locked = true;
+
+      var c1 = cards[flipped[0]];
+      var c2 = cards[flipped[1]];
+      var v1 = c1.getAttribute('data-value');
+      var v2 = c2.getAttribute('data-value');
+
+      if (v1 === v2) {
+        c1.classList.add('game__card--matched');
+        c2.classList.add('game__card--matched');
+        matched++;
+        matchEl.textContent = matched;
+        flipped = [];
+        locked = false;
+
+        if (matched === totalPairs) {
+          clearInterval(timerInterval);
+          var w = document.createElement('div');
+          w.className = 'game__win game__win--active';
+          w.textContent = '🎉 太棒了！' + steps + ' 步完成，用时 ' + timer + ' 秒！';
+          board.insertAdjacentElement('beforebegin', w);
+          winEl = w;
+          setTimeout(function () { if (w.parentNode) w.remove(); }, 4000);
+        }
+      } else {
+        setTimeout(function () {
+          c1.classList.remove('game__card--flipped');
+          c2.classList.remove('game__card--flipped');
+          flipped = [];
+          locked = false;
+        }, 700);
+      }
+    }
+  }
+
+  document.getElementById('gameEntryBtn').addEventListener('click', function () {
+    overlay.classList.add('game-overlay--active');
+    startGame(6);
+  });
+
+  document.getElementById('gameClose').addEventListener('click', function () {
+    overlay.classList.remove('game-overlay--active');
+    if (timerInterval) clearInterval(timerInterval);
+  });
+
+  document.getElementById('gameEasy').addEventListener('click', function () { startGame(6); });
+  document.getElementById('gameHard').addEventListener('click', function () { startGame(8); });
+  document.getElementById('gameRestart').addEventListener('click', function () { startGame(totalPairs); });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('game-overlay--active');
+      if (timerInterval) clearInterval(timerInterval);
+    }
+  });
 })();
 
 /* ========================================
@@ -556,7 +1204,7 @@ window.addEventListener('beforeunload', function () {
     heart.textContent = '❤';
     heart.style.left = e.clientX - 10 + 'px';
     heart.style.top = e.clientY - 10 + 'px';
-    heart.style.color = ['#B8A0C8', '#D4B8C5', '#E8C4D0', '#C8A8D8'][Math.floor(Math.random() * 4)];
+    heart.style.color = ['#E89AAA', '#F5C6D0', '#F0A0B0', '#E0A0B0'][Math.floor(Math.random() * 4)];
     heart.style.fontSize = (Math.random() * 16 + 14) + 'px';
     document.body.appendChild(heart);
 
