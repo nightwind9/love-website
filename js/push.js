@@ -107,11 +107,26 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
     });
   });
 
-  // 页面加载时同步真实订阅状态
+  // 页面加载时同步真实订阅状态：
+  // 如果浏览器里已有订阅但 Worker 没记录（如上次网络失败），自动重新上报
   register()
     .then(function (reg) { return reg.pushManager.getSubscription(); })
     .then(function (sub) {
-      setState(!!sub && Notification.permission === 'granted');
+      if (sub) {
+        var data = sub.toJSON ? sub.toJSON() : sub;
+        fetch(PUSH_WORKER_URL + '/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(function (r) {
+          if (r.ok) localStorage.setItem(PUSH_SUB_KEY, '1');
+          setState(r.ok && Notification.permission === 'granted');
+        }).catch(function () {
+          setState(Notification.permission === 'granted');
+        });
+      } else {
+        setState(false);
+      }
     })
     .catch(function () {
       setState(localStorage.getItem(PUSH_SUB_KEY) === '1');
