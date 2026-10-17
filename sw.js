@@ -8,7 +8,7 @@ var ICON_URL = SITE_URL + '/assets/images/flowers-sm/IMG_20241117_180432.jpg';
 
 self.addEventListener('push', function (event) {
   var data = {
-    title: '我们的回忆录更新啦',
+    title: '继伟与梦祺的忆站更新啦',
     body: '快来发现新的惊喜吧',
     url: SITE_URL + '/'
   };
