@@ -278,10 +278,23 @@
 
   <!-- 照片墙游戏入口按钮 -->
 
+  <!-- 更新提示弹窗 -->
+  <div class="update-overlay" id="updateOverlay">
+    <div class="update-card">
+      <button class="update-card__close" id="updateClose">&times;</button>
+      <div class="update-card__emoji">💌</div>
+      <h2 class="update-card__title">网站更新啦</h2>
+      <p class="update-card__date" id="updateDate"></p>
+      <ul class="update-card__list" id="updateList"></ul>
+      <button class="update-card__btn" id="updateBtn">去看看 💕</button>
+    </div>
+  </div>
+
   <!-- 隐藏的音频播放器 -->
   <audio id="bgAudio" preload="auto"></audio>
 
   <script src="js/main.js"></script>
   <script src="js/push.js"></script>
+  <script src="js/update.js"></script>
 </body>
 </html>
