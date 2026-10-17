@@ -50,15 +50,26 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
     return navigator.serviceWorker.register('sw.js');
   }
 
+  function withTimeout(promise, ms, msg) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () { reject(new Error(msg)); }, ms);
+      promise.then(function (v) { clearTimeout(timer); resolve(v); }, function (e) { clearTimeout(timer); reject(e); });
+    });
+  }
+
   function subscribe() {
     showHint('正在订阅...');
     register()
       .then(function (reg) {
         showHint('正在获取推送凭证...');
-        return reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(PUSH_PUBLIC_KEY)
-        });
+        return withTimeout(
+          reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(PUSH_PUBLIC_KEY)
+          }),
+          20000,
+          '获取凭证超时'
+        );
       })
       .then(function (sub) {
         var data = sub.toJSON ? sub.toJSON() : sub;
@@ -79,8 +90,10 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
       .catch(function (e) {
         setState(false);
         var msg = (e && e.message) ? e.message : '未知错误';
-        if (msg === 'Failed to fetch') {
-          showHint('❌ 无法连接推送服务器，请检查网络后重试（' + msg + '）');
+        if (msg === '获取凭证超时' || msg === 'Failed to fetch') {
+          showHint('❌ ' + msg + '。解决办法：浏览器菜单 → 添加到桌面 → 从桌面图标打开网站 → 再点订阅。还不行请截图发给他');
+        } else if (msg.indexOf('AbortError') >= 0) {
+          showHint('❌ 推送服务请求被中止。请开启手机"华为移动服务"(HMS) 后重试');
         } else {
           showHint('❌ 订阅失败：' + msg + '。请截图发给他看看');
         }
