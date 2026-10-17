@@ -1,4 +1,4 @@
-/* love-website v20260719 - breeze-love-mq - timeline updated */
+/* love-website v20261017 - breeze-love-mq - vacation updated + push resync */
 /* ========================================
    Prevent browser auto-scroll on refresh
    ======================================== */
@@ -305,11 +305,11 @@ window.addEventListener('beforeunload', function () {
   if (!grid) return;
 
   var events = [
-    { name: '中秋团圆', date: '2026-09-25', icon: '🌕', desc: '一起吃月饼' },
-    { name: '国庆小长假', date: '2026-10-01', icon: '🇨🇳', desc: '七天假期' },
-    { name: '元旦跨年', date: '2027-01-01', icon: '🎆', desc: '一起倒数' },
-    { name: '春节过年', date: '2027-01-29', icon: '🧧', desc: '回家团圆' },
     { name: '纪念日旅行', date: '2026-11-02', icon: '✈️', desc: '两周年纪念' },
+    { name: '圣诞节', date: '2026-12-25', icon: '🎄', desc: '一起过平安夜' },
+    { name: '元旦跨年', date: '2027-01-01', icon: '🎆', desc: '一起倒数' },
+    { name: '春节过年', date: '2027-02-06', icon: '🧧', desc: '回家团圆' },
+    { name: '情人节', date: '2027-02-14', icon: '💝', desc: '浪漫约会' },
   ];
 
   function formatDate(dateStr) {
