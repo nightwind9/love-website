@@ -10,7 +10,12 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
 
 (function () {
   var btn = document.getElementById('pushSubscribeBtn');
+  var hint = document.getElementById('pushHint');
   if (!btn) return;
+
+  function showHint(text) {
+    if (hint) hint.textContent = text || '';
+  }
 
   var supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   if (!supported) {
@@ -24,6 +29,7 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
       btn.textContent = '🔔 已订阅更新提醒';
       btn.classList.add('push-btn--active');
       btn.title = '点击取消订阅';
+      showHint('订阅成功，网站更新时你会收到通知');
     } else {
       btn.textContent = '🔔 订阅更新提醒';
       btn.classList.remove('push-btn--active');
@@ -45,8 +51,10 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
   }
 
   function subscribe() {
+    showHint('正在订阅...');
     register()
       .then(function (reg) {
+        showHint('正在获取推送凭证...');
         return reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(PUSH_PUBLIC_KEY)
@@ -54,11 +62,15 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
       })
       .then(function (sub) {
         var data = sub.toJSON ? sub.toJSON() : sub;
+        showHint('正在上报服务器...');
         return fetch(PUSH_WORKER_URL + '/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
-        }).then(function () { return sub; });
+        }).then(function (r) {
+          if (!r.ok) throw new Error('服务器返回 ' + r.status);
+          return sub;
+        });
       })
       .then(function () {
         localStorage.setItem(PUSH_SUB_KEY, '1');
@@ -66,7 +78,12 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
       })
       .catch(function (e) {
         setState(false);
-        alert('订阅失败：' + (e && e.message ? e.message : '请确认浏览器通知权限已开启'));
+        var msg = (e && e.message) ? e.message : '未知错误';
+        if (msg === 'Failed to fetch') {
+          showHint('❌ 无法连接推送服务器，请检查网络后重试（' + msg + '）');
+        } else {
+          showHint('❌ 订阅失败：' + msg + '。请截图发给他看看');
+        }
       });
   }
 
@@ -102,7 +119,10 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
         subscribe();
       } else if (perm === 'denied') {
         setState(false);
-        alert('通知权限被拒绝，请在浏览器设置里允许本站通知后重试');
+        showHint('❌ 通知权限被拒绝：请到浏览器设置 → 通知管理，允许本站通知后重试');
+      } else {
+        setState(false);
+        showHint('未获得通知权限，请重试并选择"允许"');
       }
     });
   });
@@ -121,11 +141,16 @@ var PUSH_SUB_KEY = 'love_push_subscribed';
         }).then(function (r) {
           if (r.ok) localStorage.setItem(PUSH_SUB_KEY, '1');
           setState(r.ok && Notification.permission === 'granted');
+          if (!r.ok) showHint('⚠️ 浏览器有订阅但服务器登记失败，请点击按钮重试');
         }).catch(function () {
           setState(Notification.permission === 'granted');
+          showHint('⚠️ 网络异常，未完成服务器登记，请刷新重试');
         });
       } else {
         setState(false);
+        if (Notification.permission === 'granted') {
+          showHint('上次订阅未完成，点击按钮重新订阅');
+        }
       }
     })
     .catch(function () {
