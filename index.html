@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
   <title>继伟与梦祺的忆站</title>
+  <meta name="description" content="继伟与梦祺的忆站——属于我们两个人的回忆：照片、美食、旅行、情书与音乐。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="继伟与梦祺的忆站">
+  <meta property="og:description" content="属于我们两个人的回忆：照片、美食、旅行、情书与音乐。">
+  <meta property="og:image" content="https://breeze-love-mq.pages.dev/assets/images/gallery-sm/MTXX_IMG_20250810_10381285.jpg">
+  <meta property="og:url" content="https://breeze-love-mq.pages.dev/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💕</text></svg>">
   <link rel="stylesheet" href="css/rose.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css">
   <script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js" defer></script>
 </head>
@@ -24,6 +29,8 @@
       <li><a href="#timeline" class="nav__link"><span class="nav__link-name">点滴</span></a></li>
       <li><a href="#food" class="nav__link"><span class="nav__link-name">食谱</span></a></li>
       <li><a href="#letter" class="nav__link"><span class="nav__link-name">情书</span></a></li>
+      <li><a href="#wish" class="nav__link"><span class="nav__link-name">心愿</span></a></li>
+      <li><a href="#capsule" class="nav__link"><span class="nav__link-name">胶囊</span></a></li>
       <li><a href="#flowers" class="nav__link"><span class="nav__link-name">花语</span></a></li>
       <li><a href="#travel" class="nav__link"><span class="nav__link-name">地图</span></a></li>
       <li><a href="#music" class="nav__link"><span class="nav__link-name">音乐</span></a></li>
@@ -147,6 +154,39 @@
     </div>
   </section>
 
+  <!-- ====== 8. 心愿小事 ====== -->
+  <section class="wish" id="wish">
+    <div class="container">
+      <h2 class="section-title">心愿小事</h2>
+      <p class="section-desc">想和你一起完成的事，点一下就是完成啦</p>
+      <div class="wish__block">
+        <h3 class="wish__subtitle">💗 恋爱小事清单</h3>
+        <p class="wish__progress" id="loveThingsProgress"></p>
+        <div class="wish__checklist" id="loveThings">
+          <!-- JS 动态生成 -->
+        </div>
+      </div>
+      <div class="wish__block">
+        <h3 class="wish__subtitle">🌟 愿望清单</h3>
+        <p class="wish__progress" id="bucketProgress"></p>
+        <div class="wish__bucket" id="bucketList">
+          <!-- JS 动态生成 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 9. 时间胶囊 ====== -->
+  <section class="capsule" id="capsule">
+    <div class="container">
+      <h2 class="section-title">时间胶囊</h2>
+      <p class="section-desc">写给未来的信，到时间才会解封</p>
+      <div class="capsule__grid" id="capsuleGrid">
+        <!-- JS 动态生成 -->
+      </div>
+    </div>
+  </section>
+
   <!-- ====== 8. 花语 ====== -->
   <section class="flowers" id="flowers">
     <div class="container">
@@ -206,7 +246,7 @@
         <!-- JS 动态生成 -->
       </div>
 
-      <div class="music__section-title">专属录音</div>
+      <div class="music__section-title" id="musicRecordingsTitle">专属录音</div>
       <div class="music__recordings" id="musicRecordings">
         <!-- JS 动态生成 -->
       </div>
