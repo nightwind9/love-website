@@ -1711,7 +1711,31 @@ button {
   }
 
   .food__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .food__card-img {
+    height: 120px;
+  }
+
+  .food__card-body {
+    padding: 12px;
+  }
+
+  .food__card-title {
+    font-size: 0.95rem;
+  }
+
+  .food__card-meta {
+    gap: 6px;
+    font-size: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .food__card-desc {
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
 
   .flowers__grid {
