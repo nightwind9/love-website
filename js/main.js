@@ -600,6 +600,68 @@ window.addEventListener('beforeunload', function () {
       container.appendChild(envelope);
     })(letters[i]);
   }
+
+  /* ---------- 手写卡片 ---------- */
+  var hwGrid = document.getElementById('hwGrid');
+  if (!hwGrid) return;
+
+  var hwCount = 10;
+  var hwBase = 'assets/images/letters/letter-';
+  var hwBaseSm = 'assets/images/letters-sm/letter-';
+
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  // 全屏查看器（自包含，不影响照片墙灯箱）
+  var viewer = document.createElement('div');
+  viewer.className = 'hw-viewer';
+  viewer.innerHTML =
+    '<button class="hw-viewer__close" title="关闭">&times;</button>' +
+    '<button class="hw-viewer__prev" title="上一张">&#10094;</button>' +
+    '<img class="hw-viewer__img" src="" alt="手写卡片">' +
+    '<button class="hw-viewer__next" title="下一张">&#10095;</button>';
+  document.body.appendChild(viewer);
+
+  var viewerImg = viewer.querySelector('.hw-viewer__img');
+  var viewerIndex = 0;
+
+  function openViewer(index) {
+    viewerIndex = index;
+    viewerImg.src = hwBase + pad2(index + 1) + '.jpg';
+    viewer.classList.add('hw-viewer--show');
+  }
+  function closeViewer() { viewer.classList.remove('hw-viewer--show'); }
+  function moveViewer(delta) {
+    viewerIndex = (viewerIndex + delta + hwCount) % hwCount;
+    viewerImg.src = hwBase + pad2(viewerIndex + 1) + '.jpg';
+  }
+
+  viewer.querySelector('.hw-viewer__close').addEventListener('click', closeViewer);
+  viewer.querySelector('.hw-viewer__prev').addEventListener('click', function (e) { e.stopPropagation(); moveViewer(-1); });
+  viewer.querySelector('.hw-viewer__next').addEventListener('click', function (e) { e.stopPropagation(); moveViewer(1); });
+  viewer.addEventListener('click', function (e) { if (e.target === viewer) closeViewer(); });
+  document.addEventListener('keydown', function (e) {
+    if (!viewer.classList.contains('hw-viewer--show')) return;
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowLeft') moveViewer(-1);
+    if (e.key === 'ArrowRight') moveViewer(1);
+  });
+
+  for (var h = 0; h < hwCount; h++) {
+    (function (index) {
+      var item = document.createElement('div');
+      item.className = 'letter__hw-item reveal';
+      var img = document.createElement('img');
+      img.className = 'letter__hw-img';
+      img.src = hwBase + pad2(index + 1) + '.jpg';
+      img.setAttribute('srcset', hwBaseSm + pad2(index + 1) + '.jpg' + ' 400w, ' + hwBase + pad2(index + 1) + '.jpg' + ' 900w');
+      img.setAttribute('sizes', '(max-width: 768px) 50vw, 33vw');
+      img.alt = '手写卡片 ' + (index + 1);
+      img.loading = 'lazy';
+      item.appendChild(img);
+      item.addEventListener('click', function () { openViewer(index); });
+      hwGrid.appendChild(item);
+    })(h);
+  }
 })();
 
 /* ========================================
