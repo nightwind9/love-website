@@ -868,7 +868,46 @@ button {
    Handwritten Cards
    ======================================== */
 .letter__hw {
+  position: relative;
   margin-top: 56px;
+  padding: 40px 24px 36px;
+  border-radius: 28px;
+  border: 1px solid rgba(232, 154, 170, 0.25);
+  background:
+    radial-gradient(circle at 6% 10%, rgba(255, 214, 224, 0.55) 0%, transparent 42%),
+    radial-gradient(circle at 94% 92%, rgba(255, 214, 224, 0.5) 0%, transparent 42%),
+    radial-gradient(circle at 92% 6%, rgba(245, 198, 208, 0.3) 0%, transparent 35%),
+    linear-gradient(180deg, #FFFAFB, #FFFDF7);
+  box-shadow: var(--shadow-sm);
+}
+
+.letter__hw-deco {
+  position: absolute;
+  font-size: 2.1rem;
+  line-height: 1;
+  opacity: 0.42;
+  pointer-events: none;
+  user-select: none;
+  transform: rotate(var(--hwrot, 0deg));
+}
+
+.letter__hw-deco--tl { --hwrot: -15deg; top: 16px; left: 20px; }
+.letter__hw-deco--tr { --hwrot: 14deg; top: 12px; right: 22px; }
+.letter__hw-deco--bl { --hwrot: 10deg; bottom: 16px; left: 26px; }
+.letter__hw-deco--br { --hwrot: -8deg; bottom: 12px; right: 20px; }
+
+@media (hover: hover) {
+  .letter__hw-deco {
+    animation: hwFloat 6s ease-in-out infinite alternate;
+  }
+  .letter__hw-deco--tr { animation-delay: 1.2s; }
+  .letter__hw-deco--bl { animation-delay: 2.2s; }
+  .letter__hw-deco--br { animation-delay: 3.1s; }
+}
+
+@keyframes hwFloat {
+  from { translate: 0 0; }
+  to { translate: 0 -8px; }
 }
 
 .letter__hw-title {
