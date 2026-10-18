@@ -1715,7 +1715,13 @@ button {
   }
 
   .flowers__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .flowers__card-caption {
+    padding: 12px;
+    font-size: 0.78rem;
   }
 
   .letter__cards {
