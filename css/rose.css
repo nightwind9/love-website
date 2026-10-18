@@ -864,6 +864,121 @@ button {
   margin-top: 12px;
 }
 
+/* ========================================
+   Handwritten Cards
+   ======================================== */
+.letter__hw {
+  margin-top: 56px;
+}
+
+.letter__hw-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary-deep);
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.letter__hw-sub {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.letter__hw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.letter__hw-item {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: zoom-in;
+  background: var(--color-white);
+}
+
+.letter__hw-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.letter__hw-item:hover .letter__hw-img {
+  transform: scale(1.03);
+}
+
+/* 手写卡片全屏查看器 */
+.hw-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(40, 26, 32, 0.93);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.hw-viewer--show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hw-viewer__img {
+  max-width: 92vw;
+  max-height: 88vh;
+  border-radius: 10px;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.hw-viewer__close {
+  position: fixed;
+  top: 14px;
+  right: 20px;
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.hw-viewer__close:hover {
+  color: var(--color-primary-light);
+}
+
+.hw-viewer__prev,
+.hw-viewer__next {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.hw-viewer__prev:hover,
+.hw-viewer__next:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.hw-viewer__prev { left: 16px; }
+.hw-viewer__next { right: 16px; }
+
 .letter__envelope-back {
   transform: rotateY(180deg);
   background: var(--color-bg-light);
@@ -1567,6 +1682,14 @@ button {
   .letter__cards {
     grid-template-columns: 1fr;
   }
+
+  .letter__hw-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .hw-viewer__prev { left: 8px; }
+  .hw-viewer__next { right: 8px; }
 
   .music__player-inner {
     padding: 28px 20px;
