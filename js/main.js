@@ -13,20 +13,16 @@ window.addEventListener('beforeunload', function () {
    Birthday Gift - Pickup Code Reveal
    ======================================== */
 (function () {
+  // 明年生日要送礼物时：把 hasPickupGift 改成 true 并填新取件码
+  var hasPickupGift = false;
   var pickupCode = '42094918';
   var revealTimes = [19, 20, 21, 22];
 
   var overlay = document.getElementById('birthdayOverlay');
   if (!overlay) return;
 
-  function isBirthday() {
-    var now = new Date();
-    return now.getFullYear() === 2026 && now.getMonth() === 7 && now.getDate() === 6;
-  }
-
   function getRevealedCount() {
     var now = new Date();
-    if (!isBirthday() && !TEST_MODE) return 0;
     var hour = now.getHours();
     var count = 0;
     for (var i = 0; i < revealTimes.length; i++) {
@@ -36,10 +32,26 @@ window.addEventListener('beforeunload', function () {
   }
 
   function updateDisplay() {
-    if (!isBirthday() && !TEST_MODE) return;
+    if (!isBirthday()) return;
 
     var now = new Date();
     var isDayAfter = now.getMonth() === 7 && now.getDate() === 7;
+
+    // 无礼物模式：隐藏取件码相关元素，只显示生日祝福
+    if (!hasPickupGift) {
+      var codeEl = document.getElementById('birthdayCode');
+      var progressEl = document.getElementById('birthdayProgressBar');
+      var pickupEl = document.getElementById('birthdayPickup');
+      if (codeEl) codeEl.style.display = 'none';
+      if (progressEl) progressEl.style.display = 'none';
+      if (pickupEl) pickupEl.style.display = 'none';
+      document.getElementById('birthdaySubtitle').textContent = '新的一岁，愿你每天都被爱包围';
+      document.getElementById('birthdayHint').textContent = '生日快乐！💕';
+      document.getElementById('birthdayEmoji').textContent = '🎂';
+      overlay.classList.add('birthday-overlay--active');
+      return;
+    }
+
     var revealed = isDayAfter ? pickupCode.length : getRevealedCount();
 
     var digits = document.querySelectorAll('.birthday__digit');
@@ -132,18 +144,16 @@ window.addEventListener('beforeunload', function () {
   function isBirthday() {
     var now = new Date();
     var m = now.getMonth(), d = now.getDate();
-    return now.getFullYear() === 2026 && m === 7 && (d === 6 || d === 7);
+    return m === 7 && (d === 6 || d === 7);
   }
 
-  var TEST_MODE = false;
-
-  var shownToday = TEST_MODE ? false : sessionStorage.getItem('birthdayShown');
-  if ((isBirthday() || TEST_MODE) && !shownToday) {
+  var shownToday = sessionStorage.getItem('birthdayShown');
+  if (isBirthday() && !shownToday) {
     updateDisplay();
   }
 
   setInterval(function () {
-    if (isBirthday() || TEST_MODE) updateDisplay();
+    if (isBirthday()) updateDisplay();
   }, 60000);
 
   document.getElementById('birthdayClose').addEventListener('click', function () {
@@ -501,6 +511,17 @@ window.addEventListener('beforeunload', function () {
     { date: '2026年10月1日', title: '国庆见家长', desc: '带你见了爸妈，也带我见了叔叔阿姨还有奶奶。和家人在一起，是幸福、惬意与温馨的。' },
   ];
 
+  // 按日期自动排序，新增事件无需手动调整位置
+  events.sort(function (a, b) {
+    return parseEventDate(a.date) - parseEventDate(b.date);
+  });
+
+  function parseEventDate(str) {
+    var m = str.match(/(\d+)年(\d+)月(\d+)日/);
+    if (!m) return 0;
+    return new Date(+m[1], +m[2] - 1, +m[3]).getTime();
+  }
+
   for (var i = 0; i < events.length; i++) {
     var item = document.createElement('div');
     item.className = 'timeline__item reveal';
@@ -720,6 +741,210 @@ window.addEventListener('beforeunload', function () {
 })();
 
 /* ========================================
+   Wish List (恋爱小事 + 愿望清单)
+   ======================================== */
+(function () {
+  var loveThingsEl = document.getElementById('loveThings');
+  var bucketEl = document.getElementById('bucketList');
+  if (!loveThingsEl || !bucketEl) return;
+
+  var loveThings = [
+    '一起看一场日出',
+    '一起看一场日落',
+    '一起坐一次摩天轮',
+    '在雨中打同一把伞散步',
+    '一起去海边捡贝壳',
+    '一起放一次烟花',
+    '一起去爬山',
+    '一起露营看星星',
+    '一起看一场电影',
+    '一起做一顿饭',
+    '一起烘焙小甜点',
+    '一起去逛宜家',
+    '一起去菜市场买菜',
+    '一起坐火车去旅行',
+    '一起坐飞机去旅行',
+    '一起养一盆植物',
+    '一起拍一组情侣写真',
+    '一起看演唱会或音乐节',
+    '互相写一封手写信',
+    '一起去游乐园坐过山车',
+    '一起跨年倒数',
+    '一起逛对方的母校',
+    '一起看一场初雪',
+    '一起为对方准备一次惊喜',
+  ];
+
+  var bucketList = [
+    { name: '一起去看海', emoji: '🌊' },
+    { name: '一起去云南大理丽江', emoji: '🏔️' },
+    { name: '一起去迪士尼', emoji: '🏰' },
+    { name: '一起去成都吃火锅', emoji: '🌶️' },
+    { name: '一起去西安看兵马俑', emoji: '🏛️' },
+    { name: '一起去哈尔滨看冰雕', emoji: '❄️' },
+    { name: '一起出国旅行一次', emoji: '✈️' },
+    { name: '一起住一次海景房', emoji: '🌅' },
+    { name: '一起去音乐节', emoji: '🎸' },
+    { name: '一起去看极光', emoji: '🌌' },
+  ];
+
+  var LOVE_KEY = 'love_things_done';
+  var BUCKET_KEY = 'love_bucket_done';
+
+  function loadDone(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
+  }
+  function saveDone(key, arr) {
+    localStorage.setItem(key, JSON.stringify(arr));
+  }
+
+  function buildChecklist(items, container, key, progressEl) {
+    var done = loadDone(key);
+    function render() {
+      for (var i = 0; i < items.length; i++) {
+        (function (idx) {
+          var item = document.createElement('div');
+          item.className = 'wish__item reveal';
+          if (done.indexOf(idx) >= 0) item.classList.add('wish__item--done');
+          item.innerHTML = '<span class="wish__item-check">✓</span><span class="wish__item-text">' + items[idx] + '</span>';
+          item.addEventListener('click', function () {
+            var pos = done.indexOf(idx);
+            if (pos >= 0) { done.splice(pos, 1); item.classList.remove('wish__item--done'); }
+            else { done.push(idx); item.classList.add('wish__item--done'); }
+            saveDone(key, done);
+            updateProgress();
+          });
+          container.appendChild(item);
+        })(i);
+      }
+      updateProgress();
+    }
+    function updateProgress() {
+      if (progressEl) {
+        progressEl.textContent = '已完成 ' + done.length + ' / ' + items.length + (done.length === items.length ? ' 🎉 全部完成啦！' : '');
+      }
+    }
+    render();
+  }
+
+  buildChecklist(loveThings, loveThingsEl, LOVE_KEY, document.getElementById('loveThingsProgress'));
+
+  var bucketDone = loadDone(BUCKET_KEY);
+  function updateBucketProgress() {
+    var el = document.getElementById('bucketProgress');
+    if (el) el.textContent = '已实现 ' + bucketDone.length + ' / ' + bucketList.length + (bucketDone.length === bucketList.length ? ' 🎉 全部实现啦！' : '');
+  }
+  for (var b = 0; b < bucketList.length; b++) {
+    (function (idx) {
+      var item = document.createElement('div');
+      item.className = 'wish__bucket-item reveal';
+      if (bucketDone.indexOf(idx) >= 0) item.classList.add('wish__item--done');
+      item.innerHTML =
+        '<span class="wish__bucket-emoji">' + bucketList[idx].emoji + '</span>' +
+        '<span class="wish__item-text">' + bucketList[idx].name + '</span>' +
+        '<span class="wish__item-check">✓</span>';
+      item.addEventListener('click', function () {
+        var pos = bucketDone.indexOf(idx);
+        if (pos >= 0) { bucketDone.splice(pos, 1); item.classList.remove('wish__item--done'); }
+        else { bucketDone.push(idx); item.classList.add('wish__item--done'); }
+        saveDone(BUCKET_KEY, bucketDone);
+        updateBucketProgress();
+      });
+      bucketEl.appendChild(item);
+    })(b);
+  }
+  updateBucketProgress();
+})();
+
+/* ========================================
+   Time Capsule 时间胶囊
+   ======================================== */
+(function () {
+  var grid = document.getElementById('capsuleGrid');
+  if (!grid) return;
+
+  // 新增胶囊：在数组里加一条即可，unlock 到日期后自动解封
+  var capsules = [
+    {
+      title: '两周年纪念',
+      unlock: '2026-11-02',
+      emoji: '💌',
+      content: '亲爱的梦祺，两周年快乐！两年前的今天凌晨两点，你带着空运的鲜花出现在我面前。这两年里，我们一起走过了许多座城市、吃了无数顿饭、攒下了满墙的照片。谢谢你让我相信，爱一个人可以这么踏实又这么浪漫。接下来的日子，我们继续并肩走。永远爱你。'
+    },
+    {
+      title: '2027 新年寄语',
+      unlock: '2027-01-01',
+      emoji: '🎆',
+      content: '2027 年的梦祺你好呀。如果这个胶囊按时打开，说明我们又一起走过了一年。新的一年，希望我们依然健康、快乐，多旅行、少争吵、常拥抱。新年快乐，我最爱的女孩。'
+    },
+    {
+      title: '2027 生日胶囊',
+      unlock: '2027-08-06',
+      emoji: '🎂',
+      content: '生日快乐，梦祺！又长大一岁啦。希望今年的你愿望成真，我会一直在你身边，陪你过每一个生日。爱你。'
+    },
+  ];
+
+  var OPEN_KEY = 'capsule_opened_';
+
+  for (var i = 0; i < capsules.length; i++) {
+    (function (cap, idx) {
+      var card = document.createElement('div');
+      card.className = 'capsule__card reveal';
+
+      var unlockTime = new Date(cap.unlock + 'T00:00:00').getTime();
+      var isUnlocked = Date.now() >= unlockTime;
+      var isOpened = localStorage.getItem(OPEN_KEY + idx) === '1';
+
+      if (!isUnlocked) {
+        card.classList.add('capsule__card--locked');
+        card.innerHTML =
+          '<div class="capsule__emoji">🔒</div>' +
+          '<div class="capsule__title">' + cap.title + '</div>' +
+          '<div class="capsule__countdown" data-unlock="' + cap.unlock + '">计算中...</div>' +
+          '<div class="capsule__hint">' + cap.emoji + ' 一封写给未来的信</div>';
+        grid.appendChild(card);
+        updateCountdown(card.querySelector('.capsule__countdown'), cap.unlock);
+        return;
+      }
+
+      // 已解锁
+      card.innerHTML =
+        '<div class="capsule__emoji">' + cap.emoji + '</div>' +
+        '<div class="capsule__title">' + cap.title + '</div>' +
+        '<div class="capsule__unlocked">' + cap.unlock + ' 已解封</div>' +
+        '<button class="capsule__btn">' + (isOpened ? '再看一次 💕' : '打开胶囊 💌') + '</button>' +
+        '<p class="capsule__content' + (isOpened ? ' capsule__content--show' : '') + '">' + cap.content + '</p>';
+
+      var btn = card.querySelector('.capsule__btn');
+      var contentEl = card.querySelector('.capsule__content');
+      btn.addEventListener('click', function () {
+        contentEl.classList.add('capsule__content--show');
+        localStorage.setItem(OPEN_KEY + idx, '1');
+        btn.textContent = '再看一次 💕';
+      });
+
+      grid.appendChild(card);
+    })(capsules[i], i);
+  }
+
+  function updateCountdown(el, unlockDate) {
+    var unlockTime = new Date(unlockDate + 'T00:00:00').getTime();
+    function tick() {
+      var daysLeft = Math.ceil((unlockTime - Date.now()) / (1000 * 60 * 60 * 24));
+      if (daysLeft > 0) {
+        el.textContent = '还剩 ' + daysLeft + ' 天解封';
+      } else {
+        el.textContent = '已解封，刷新页面打开';
+        clearInterval(timer);
+      }
+    }
+    tick();
+    var timer = setInterval(tick, 60 * 60 * 1000);
+  }
+})();
+
+/* ========================================
    Travel Map
    ======================================== */
 (function () {
@@ -845,12 +1070,15 @@ window.addEventListener('beforeunload', function () {
     { title: '梦祺起床啦', artist: '继伟', file: 'assets/audio/梦祺起床啦.mp3' },
   ];
 
-  // Voice recordings
+  // Voice recordings (与歌单去重，有新的专属录音再添加)
   var recordings = [
-    { name: '梦祺起床啦', date: '继伟', file: 'assets/audio/梦祺起床啦.mp3' },
-    { name: '明天过后', date: '继伟', file: 'assets/audio/明天过后.m4a' },
-    { name: '蝴蝶 love u~', date: '继伟', file: 'assets/audio/蝴蝶_love u~.m4a' },
   ];
+
+  var recordingsTitleEl = document.getElementById('musicRecordingsTitle');
+  if (recordings.length === 0 && recordingsTitleEl) {
+    recordingsTitleEl.style.display = 'none';
+    recordingsEl.style.display = 'none';
+  }
 
   var currentTrack = -1;
   var isPlaying = false;
