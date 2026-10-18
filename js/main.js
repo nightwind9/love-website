@@ -662,6 +662,23 @@ window.addEventListener('beforeunload', function () {
       hwGrid.appendChild(item);
     })(h);
   }
+
+  /* ---------- 花藤点缀 ---------- */
+  var hwWrap = document.querySelector('#letter .letter__hw');
+  if (hwWrap) {
+    var decoList = [
+      { cls: 'letter__hw-deco--tl', ch: '🌸' },
+      { cls: 'letter__hw-deco--tr', ch: '🌿' },
+      { cls: 'letter__hw-deco--bl', ch: '💮' },
+      { cls: 'letter__hw-deco--br', ch: '🌼' }
+    ];
+    for (var d = 0; d < decoList.length; d++) {
+      var sp = document.createElement('span');
+      sp.className = 'letter__hw-deco ' + decoList[d].cls;
+      sp.textContent = decoList[d].ch;
+      hwWrap.appendChild(sp);
+    }
+  }
 })();
 
 /* ========================================
