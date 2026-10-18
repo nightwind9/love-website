@@ -330,8 +330,10 @@ window.addEventListener('beforeunload', function () {
 
     card.innerHTML =
       '<span class="vacation__card-icon">' + events[i].icon + '</span>' +
-      '<div class="vacation__card-name">' + events[i].name + '</div>' +
-      '<div class="vacation__card-date">' + formatDate(events[i].date) + ' · ' + events[i].desc + '</div>' +
+      '<div class="vacation__card-info">' +
+        '<div class="vacation__card-name">' + events[i].name + '</div>' +
+        '<div class="vacation__card-date">' + formatDate(events[i].date) + ' · ' + events[i].desc + '</div>' +
+      '</div>' +
       '<div class="vacation__card-countdown">' +
         '<span class="vacation__card-number" data-date="' + events[i].date + '">--</span>' +
         '<span class="vacation__card-unit">天</span>' +
